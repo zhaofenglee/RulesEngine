@@ -1,0 +1,15 @@
+{
+  "extends": "./tsconfig.prod.json",
+  "compilerOptions": {
+    "paths": {
+      "@j-s.Abp/rules-engine": [
+        "projects/rules-engine/src/public-api.ts"
+      ],
+      "@j-s.Abp/rules-engine/config": [
+        "projects/rules-engine/config/src/public-api.ts"
+      ],
+      "@proxy": ["projects/rules-engine/src/lib/proxy/index.ts"],
+      "@proxy/*": ["projects/rules-engine/src/lib/proxy/*"]
+    }
+  }
+}

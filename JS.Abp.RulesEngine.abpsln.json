@@ -1,0 +1,7 @@
+{
+  "modules": {
+    "JS.Abp.RulesEngine": {
+      "path": "JS.Abp.RulesEngine.abpmdl.json"
+    }
+  }
+}

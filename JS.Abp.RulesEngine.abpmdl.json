@@ -1,0 +1,111 @@
+{
+  "folders": {
+    "items": {
+      "src": {},
+      "test": {},
+      "host": {}
+    }
+  },
+  "packages": {
+    "JS.Abp.RulesEngine.Domain.Shared": {
+      "path": "src/JS.Abp.RulesEngine.Domain.Shared/JS.Abp.RulesEngine.Domain.Shared.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Domain": {
+      "path": "src/JS.Abp.RulesEngine.Domain/JS.Abp.RulesEngine.Domain.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Application.Contracts": {
+      "path": "src/JS.Abp.RulesEngine.Application.Contracts/JS.Abp.RulesEngine.Application.Contracts.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Application": {
+      "path": "src/JS.Abp.RulesEngine.Application/JS.Abp.RulesEngine.Application.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.EntityFrameworkCore": {
+      "path": "src/JS.Abp.RulesEngine.EntityFrameworkCore/JS.Abp.RulesEngine.EntityFrameworkCore.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.MongoDB": {
+      "path": "src/JS.Abp.RulesEngine.MongoDB/JS.Abp.RulesEngine.MongoDB.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.HttpApi": {
+      "path": "src/JS.Abp.RulesEngine.HttpApi/JS.Abp.RulesEngine.HttpApi.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.HttpApi.Client": {
+      "path": "src/JS.Abp.RulesEngine.HttpApi.Client/JS.Abp.RulesEngine.HttpApi.Client.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.TestBase": {
+      "path": "test/JS.Abp.RulesEngine.TestBase/JS.Abp.RulesEngine.TestBase.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.EntityFrameworkCore.Tests": {
+      "path": "test/JS.Abp.RulesEngine.EntityFrameworkCore.Tests/JS.Abp.RulesEngine.EntityFrameworkCore.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.MongoDB.Tests": {
+      "path": "test/JS.Abp.RulesEngine.MongoDB.Tests/JS.Abp.RulesEngine.MongoDB.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.Domain.Tests": {
+      "path": "test/JS.Abp.RulesEngine.Domain.Tests/JS.Abp.RulesEngine.Domain.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.Application.Tests": {
+      "path": "test/JS.Abp.RulesEngine.Application.Tests/JS.Abp.RulesEngine.Application.Tests.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.HttpApi.Host": {
+      "path": "host/JS.Abp.RulesEngine.HttpApi.Host/JS.Abp.RulesEngine.HttpApi.Host.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.Web": {
+      "path": "src/JS.Abp.RulesEngine.Web/JS.Abp.RulesEngine.Web.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.HttpApi.Client.ConsoleTestApp": {
+      "path": "test/JS.Abp.RulesEngine.HttpApi.Client.ConsoleTestApp/JS.Abp.RulesEngine.HttpApi.Client.ConsoleTestApp.abppkg.json",
+      "folder": "test"
+    },
+    "JS.Abp.RulesEngine.Web.Host": {
+      "path": "host/JS.Abp.RulesEngine.Web.Host/JS.Abp.RulesEngine.Web.Host.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.AuthServer": {
+      "path": "host/JS.Abp.RulesEngine.AuthServer/JS.Abp.RulesEngine.AuthServer.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.Host.Shared": {
+      "path": "host/JS.Abp.RulesEngine.Host.Shared/JS.Abp.RulesEngine.Host.Shared.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.Web.Unified": {
+      "path": "host/JS.Abp.RulesEngine.Web.Unified/JS.Abp.RulesEngine.Web.Unified.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.Blazor": {
+      "path": "src/JS.Abp.RulesEngine.Blazor/JS.Abp.RulesEngine.Blazor.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Blazor.Host": {
+      "path": "host/JS.Abp.RulesEngine.Blazor.Host/JS.Abp.RulesEngine.Blazor.Host.abppkg.json",
+      "folder": "host"
+    },
+    "JS.Abp.RulesEngine.Blazor.Server": {
+      "path": "src/JS.Abp.RulesEngine.Blazor.Server/JS.Abp.RulesEngine.Blazor.Server.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Blazor.WebAssembly": {
+      "path": "src/JS.Abp.RulesEngine.Blazor.WebAssembly/JS.Abp.RulesEngine.Blazor.WebAssembly.abppkg.json",
+      "folder": "src"
+    },
+    "JS.Abp.RulesEngine.Blazor.Server.Host": {
+      "path": "host/JS.Abp.RulesEngine.Blazor.Server.Host/JS.Abp.RulesEngine.Blazor.Server.Host.abppkg.json",
+      "folder": "host"
+    }
+  }
+}
