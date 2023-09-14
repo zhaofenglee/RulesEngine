@@ -1,0 +1,99 @@
+@page
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using JS.Abp.RulesEngine.Permissions
+@using JS.Abp.RulesEngine.Web.Pages.RulesEngine.Rules
+@using JS.Abp.RulesEngine.Web.Menus
+@using Microsoft.AspNetCore.Mvc.Localization
+@using JS.Abp.RulesEngine.Localization
+@inject IHtmlLocalizer<RulesEngineResource> L
+@inject IAuthorizationService Authorization
+@model IndexModel
+@inject IPageLayout PageLayout
+@{
+    PageLayout.Content.Title = L["Rules"].Value;
+    PageLayout.Content.MenuItemName = RulesEngineMenus.Rules;
+}
+
+@section styles
+{
+
+}
+
+@section scripts
+{
+    <abp-script src="/Pages/RulesEngine/Rules/index.js" />
+
+}
+
+@section content_toolbar {
+    <abp-button id="ExportToExcelButton" text="@L["ExportToExcel"].Value" icon="download" size="Small" button-type="Primary" />
+    @if (await Authorization.IsGrantedAsync(RulesEnginePermissions.Rules.Create))
+    {
+        <abp-button id="NewRuleButton" text="@L["NewRule"].Value" icon="plus" size="Small" button-type="Primary" />
+    }
+
+}
+
+
+
+<abp-card>
+    <abp-card-body>
+		<abp-row class="mb-3">
+            <abp-column size-md="_12">
+                <form id="SearchForm" autocomplete="off">
+                    <div class="input-group">
+                        <input class="form-control page-search-filter-text" id="FilterText" placeholder="@L["Search"]"/>
+                        <abp-button button-type="Primary" type="submit" icon="search"/>
+                    </div>
+                </form>
+            </abp-column>
+            <abp-column size-md="_12" class="mt-3">
+                <a href="javascript:;" id="AdvancedFilterSectionToggler" class="text-decoration-none">@L["SeeAdvancedFilters"]</a>
+            </abp-column>
+        </abp-row>
+
+        <abp-row id="AdvancedFilterSection" style="display: none;">
+            <abp-column size="_3">
+                <abp-input asp-for="RuleCodeFilter" label="@L["RuleCode"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="SuccessEventFilter" label="@L["SuccessEvent"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="ErrorMessageFilter" label="@L["ErrorMessage"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="ErrorTypeFilter" label="@L["ErrorType"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-select asp-for="RuleExpressionTypeFilter" label="@L["RuleExpressionType"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="ExpressionFilter" label="@L["Expression"].Value" />
+            </abp-column>
+            <abp-column size="_3">
+                <abp-input asp-for="DescriptionFilter" label="@L["Description"].Value" />
+            </abp-column>
+
+        </abp-row>
+
+        <abp-table striped-rows="true" id="RulesTable">
+            <thead>
+				<tr>
+					<th>@L["Actions"]</th>
+					<th>@L["RuleCode"]</th>
+					<th>@L["SuccessEvent"]</th>
+					<th>@L["ErrorMessage"]</th>
+					<th>@L["ErrorType"]</th>
+					<th>@L["RuleExpressionType"]</th>
+					<th>@L["Expression"]</th>
+					<th>@L["Description"]</th>
+
+
+				</tr>
+            </thead>
+        </abp-table>
+    </abp-card-body>
+</abp-card>
+

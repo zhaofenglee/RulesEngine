@@ -1,7 +1,7 @@
 {
   "culture": "hu",
   "texts": {
-    "MyAccount": "A fiókom",
-    "SamplePageMessage": "Mintaoldal a RulesEngine modulhoz"
+    "SamplePageMessage": "A RulesEngine modul mintaoldala",
+    "Menu:RulesEngine": "Saját Projektnév"
   }
 }

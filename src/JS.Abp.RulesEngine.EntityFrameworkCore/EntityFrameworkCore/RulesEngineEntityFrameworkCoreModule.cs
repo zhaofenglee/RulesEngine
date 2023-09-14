@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using JS.Abp.RulesEngine.RulesMembers;
+using JS.Abp.RulesEngine.RulesGroups;
+using JS.Abp.RulesEngine.Rules;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
 using Volo.Abp.Modularity;
 
@@ -14,9 +17,15 @@ public class RulesEngineEntityFrameworkCoreModule : AbpModule
     {
         context.Services.AddAbpDbContext<RulesEngineDbContext>(options =>
         {
-                /* Add custom repositories here. Example:
-                 * options.AddRepository<Question, EfCoreQuestionRepository>();
-                 */
+            /* Add custom repositories here. Example:
+             * options.AddRepository<Question, EfCoreQuestionRepository>();
+             */
+            options.AddRepository<Rule, Rules.EfCoreRuleRepository>();
+
+            options.AddRepository<RulesGroup, RulesGroups.EfCoreRulesGroupRepository>();
+
+            options.AddRepository<RulesMember, RulesMembers.EfCoreRulesMemberRepository>();
+
         });
     }
 }

@@ -1,0 +1,324 @@
+@page "/RulesEngine/RulesGroups/{RulesGroupId:guid}"
+
+
+
+@attribute [Authorize(RulesEnginePermissions.RulesMembers.Default)]
+@using global::JS.Abp.RulesEngine.RulesMembers
+@using global::JS.Abp.RulesEngine.Localization
+@using global::JS.Abp.RulesEngine.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using global::JS.Abp.RulesEngine.Permissions
+@using JS.Abp.RulesEngine.RulesGroups
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits RulesEngineComponentBase
+@inject IRulesGroupsAppService RulesGroupsAppService
+@inject IRulesMembersAppService RulesMembersAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["RulesMembers"]" BreadcrumbItems="BreadcrumbItems" Toolbar="Toolbar">
+
+</PageHeader>
+
+
+@* ************************* DATA GRID ************************* *@
+<Card>
+    <CardBody>
+        <Row>
+            <div class="container mb-4">
+                <Row>
+                    <Column>
+                        <span class="text-muted">@L["GroupName"]</span>
+                        <p class="h4">@(RulesGroup.GroupName == null ? "-" : RulesGroup.GroupName)</p>
+                    </Column>
+                    <Column>
+                        <span class="text-muted">@L["OperatorType"]</span>
+                        <p class="h5">
+                            @if (RulesGroup.OperatorType == OperatorTypes.OperatorType.Or)
+                            {
+                                <span class="text-primary">
+                                    <i class="fa fa-info-circle"></i>
+                                </span>
+                            }
+                            @if (RulesGroup.OperatorType == OperatorTypes.OperatorType.And)
+                            {
+                                <span class="text-success">
+                                    <i class="fa fa-info-circle"></i>
+                                </span>
+                            }
+
+
+                            &nbsp; @(RulesGroup.OperatorType.ToString())
+                        </p>
+                    </Column>
+
+                    <Column>
+                        <span class="text-muted">@L["Description"]</span>
+                        <p class="h4">@(RulesGroup.Description == null ? "-" : RulesGroup.Description)</p>
+                    </Column>
+
+                </Row>
+                <hr class="mb-4 mt-3"/>
+
+            </div>
+        </Row>
+
+        <hr/>
+
+        <Paragraph TextAlignment="TextAlignment.End">
+             <Button Color="Color.Primary" style="margin-right: 20px"
+                                    Clicked="DownloadAsExcelAsync">
+                                <i class="fa fa-download"></i>
+                                @L["ExportToExcel"]
+                            </Button>
+            @if (CanCreateRulesMember)
+            {
+                <Button Color="Color.Primary"
+                        Clicked="OpenCreateRulesMemberModalAsync">
+                    <i class="fa fa-plus"></i>
+                    @L["NewRulesMember"]
+                </Button>
+            }
+        </Paragraph>
+                        
+        <DataGrid TItem="RulesMemberWithNavigationPropertiesDto"
+                  Data="RulesMemberList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="RulesMemberWithNavigationPropertiesDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="RulesMemberWithNavigationPropertiesDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="RulesMemberWithNavigationPropertiesDto"
+                                          Visible="@CanEditRulesMember"
+                                          Clicked="async () => await OpenEditRulesMemberModalAsync(context)"
+                                          Text="@L["Edit"]"></EntityAction>
+                            <EntityAction TItem="RulesMemberWithNavigationPropertiesDto"
+                                          Visible="@CanDeleteRulesMember"
+                                          Clicked="() => DeleteRulesMemberAsync(context)"
+                                          ConfirmationMessage="@(() => L["DeleteConfirmationMessage"])"
+                                          Text="@L["Delete"]"></EntityAction>
+                            
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+
+                <DataGridColumn TItem="RulesMemberWithNavigationPropertiesDto"
+                                Field="RulesMember.Sequence"
+                                Caption="@L["Sequence"]">
+                </DataGridColumn>
+                
+                <DataGridColumn TItem="RulesMemberWithNavigationPropertiesDto"
+                                Field="Rule.RuleCode"
+                                Caption="@L["Rule"]">
+                </DataGridColumn>
+                
+
+                <DataGridColumn TItem="RulesMemberWithNavigationPropertiesDto"
+                                Field="RulesMember.Description"
+                                Caption="@L["Description"]">
+                </DataGridColumn>
+
+                @* <DataGridColumn TItem="RulesMemberWithNavigationPropertiesDto" *@
+                @*                 Field="RulesGroup.GroupName" *@
+                @*                 Caption="@L["RulesGroup"]"> *@
+                @* </DataGridColumn> *@
+
+               
+
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@* ************************* CREATE MODAL ************************* *@
+<Modal @ref="CreateRulesMemberModal" Closing="@CreateRulesMemberModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="CreateRulesMemberForm">
+            <ModalHeader>
+                <ModalTitle>@L["NewRulesMember"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateRulesMemberModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@NewRulesMemberValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@NewRulesMember"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Sequence"]</FieldLabel>
+                            <NumericPicker TValue="int" @bind-Value="@NewRulesMember.Sequence"  Decimals="0" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </NumericPicker>
+                        </Field>
+                    </Validation>
+                    
+                    <Field>
+                        <FieldLabel>@L["Rule"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@NewRulesMember.RuleId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var rule in RulesCollection)
+                            {
+                                <SelectItem TValue="Guid?" Value="@rule.Id">
+                                    @rule.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@NewRulesMember.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    @* <Field> *@
+                    @*     <FieldLabel>@L["RulesGroup"]</FieldLabel> *@
+                    @*     <Select TValue="Guid?" @bind-SelectedValue="@NewRulesMember.RulesGroupId"> *@
+                    @*         <SelectItem TValue="Guid?" Value="null"></SelectItem> *@
+                    @*         @foreach (var rulesGroup in RulesGroupsCollection) *@
+                    @*         { *@
+                    @*             <SelectItem TValue="Guid?" Value="@rulesGroup.Id"> *@
+                    @*                 @rulesGroup.DisplayName *@
+                    @*             </SelectItem> *@
+                    @*         } *@
+                    @*     </Select> *@
+                    @* </Field> *@
+
+
+                
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateRulesMemberModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRulesMemberForm" Clicked="CreateRulesMemberAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>
+
+@* ************************* EDIT MODAL ************************* *@
+<Modal @ref="EditRulesMemberModal" Closing="@EditRulesMemberModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="EditRulesMemberForm">
+            <ModalHeader>
+                <ModalTitle>@L["Update"]</ModalTitle>
+                <CloseButton Clicked="CloseEditRulesMemberModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditingRulesMemberValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@EditingRulesMember"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Sequence"]</FieldLabel>
+                            <NumericPicker TValue="int" @bind-Value="@EditingRulesMember.Sequence"  Decimals="0" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                             </NumericPicker>
+                        </Field>
+                     </Validation>
+
+                    <Field>
+                        <FieldLabel>@L["Rule"]</FieldLabel>
+                        <Select TValue="Guid?" @bind-SelectedValue="@EditingRulesMember.RuleId">
+                            <SelectItem TValue="Guid?" Value="null"></SelectItem>
+                            @foreach (var rule in RulesCollection)
+                            {
+                                <SelectItem TValue="Guid?" Value="@rule.Id">
+                                    @rule.DisplayName
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+                    
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@EditingRulesMember.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    @* <Field> *@
+                    @*     <FieldLabel>@L["RulesGroup"]</FieldLabel> *@
+                    @*     <Select TValue="Guid?" @bind-SelectedValue="@EditingRulesMember.RulesGroupId"> *@
+                    @*         <SelectItem TValue="Guid?" Value="null"></SelectItem> *@
+                    @*         @foreach (var rulesGroup in RulesGroupsCollection) *@
+                    @*         { *@
+                    @*             <SelectItem TValue="Guid?" Value="@rulesGroup.Id"> *@
+                    @*                 @rulesGroup.DisplayName *@
+                    @*             </SelectItem> *@
+                    @*         } *@
+                    @*     </Select> *@
+                    @* </Field> *@
+
+
+                  
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseEditRulesMemberModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRulesMemberForm" Clicked="UpdateRulesMemberAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>

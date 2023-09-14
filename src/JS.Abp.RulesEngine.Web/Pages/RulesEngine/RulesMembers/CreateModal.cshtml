@@ -1,0 +1,39 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using JS.Abp.RulesEngine.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using JS.Abp.RulesEngine.Web.Pages.RulesEngine.RulesMembers
+@using JS.Abp.RulesEngine.RulesMembers;
+@using System.Globalization
+@inject IHtmlLocalizer<RulesEngineResource> L
+@model CreateModalModel
+@{
+    Layout = null;
+}
+
+
+<form data-ajaxForm="true" asp-page="/RulesEngine/RulesMembers/CreateModal"  autocomplete="off">
+    <abp-modal id="RulesMemberCreateModal">
+        <abp-modal-header title="@L["NewRulesMember"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+
+                    
+
+            <abp-input asp-for="RulesMember.Sequence"   />
+
+<abp-select asp-for="RulesMember.RuleId" asp-items="Model.RuleLookupList" label="@L["Rule"].Value"/>
+<abp-input asp-for="RulesMember.Description" text-area  />
+<abp-input  type="hidden" value="@Model.RulesGroupId" asp-for="RulesMember.RulesGroupId" />
+
+@* <abp-select asp-for="RulesMember.RulesGroupId" asp-items="Model.RulesGroupLookupList" label="@L["RulesGroup"].Value"/>    *@
+
+                
+
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+
+        </abp-modal-footer>
+    </abp-modal>
+</form>

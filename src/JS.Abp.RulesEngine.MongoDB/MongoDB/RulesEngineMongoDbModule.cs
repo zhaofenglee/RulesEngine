@@ -1,4 +1,7 @@
-﻿using Microsoft.Extensions.DependencyInjection;
+using JS.Abp.RulesEngine.RulesMembers;
+using JS.Abp.RulesEngine.RulesGroups;
+using JS.Abp.RulesEngine.Rules;
+using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Modularity;
 using Volo.Abp.MongoDB;
 
@@ -14,9 +17,15 @@ public class RulesEngineMongoDbModule : AbpModule
     {
         context.Services.AddMongoDbContext<RulesEngineMongoDbContext>(options =>
         {
-                /* Add custom repositories here. Example:
-                 * options.AddRepository<Question, MongoQuestionRepository>();
-                 */
+            /* Add custom repositories here. Example:
+             * options.AddRepository<Question, MongoQuestionRepository>();
+             */
+            options.AddRepository<Rule, Rules.MongoRuleRepository>();
+
+            options.AddRepository<RulesGroup, RulesGroups.MongoRulesGroupRepository>();
+
+            options.AddRepository<RulesMember, RulesMembers.MongoRulesMemberRepository>();
+
         });
     }
 }

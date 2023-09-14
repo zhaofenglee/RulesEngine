@@ -1,10 +1,13 @@
-﻿namespace JS.Abp.RulesEngine.Blazor.Menus;
+namespace JS.Abp.RulesEngine.Blazor.Menus;
 
 public class RulesEngineMenus
 {
     public const string Prefix = "RulesEngine";
 
-    //Add your menu items here...
-    //public const string Home = Prefix + ".MyNewMenuItem";
+    public const string Rules = Prefix + ".Rules";
+
+    public const string RulesGroups = Prefix + ".RulesGroups";
+
+    public const string RulesMembers = Prefix + ".RulesMembers";
 
 }

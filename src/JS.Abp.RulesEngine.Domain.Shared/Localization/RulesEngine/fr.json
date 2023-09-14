@@ -1,7 +1,7 @@
 {
- "culture": "fr",
- "texts": {
-  "MyAccount": "Mon compte",
-  "SamplePageMessage": "Exemple de page pour le module RulesEngine"
- }
+  "culture": "fr",
+  "texts": {
+    "SamplePageMessage": "Un exemple de page pour le module RulesEngine",
+    "Menu:RulesEngine": "RulesEngine"
+  }
 }

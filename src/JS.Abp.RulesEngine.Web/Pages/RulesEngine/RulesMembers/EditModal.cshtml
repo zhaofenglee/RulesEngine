@@ -1,0 +1,38 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using JS.Abp.RulesEngine.Localization
+@using JS.Abp.RulesEngine.Web.Pages.RulesEngine.RulesMembers
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using JS.Abp.RulesEngine.RulesMembers;
+@using System.Globalization
+@inject IHtmlLocalizer<RulesEngineResource> L
+@model EditModalModel
+@{
+    Layout = null;
+}
+
+<form data-ajaxForm="true" asp-page="/RulesEngine/RulesMembers/EditModal" autocomplete="off">
+    <abp-modal id="RulesMemberEditModal">
+        <abp-modal-header title="@L["Update"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+
+            <abp-input asp-for="Id"/>
+            <abp-input asp-for="RulesMember.ConcurrencyStamp" hidden="true" suppress-label="true"/>
+
+
+            <abp-input asp-for="RulesMember.Sequence"/>
+            <abp-select asp-for="RulesMember.RuleId" asp-items="Model.RuleLookupList" label="@L["Rule"].Value"/>
+
+            <abp-input asp-for="RulesMember.Description" text-area/>
+
+            <abp-input hidden="true" suppress-label="true" asp-for="RulesMember.RulesGroupId"/>
+
+
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel | AbpModalButtons.Save)">
+
+        </abp-modal-footer>
+    </abp-modal>
+</form>

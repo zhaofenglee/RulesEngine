@@ -1,7 +1,7 @@
 {
   "culture": "fi",
   "texts": {
-    "MyAccount": "Tilini",
-    "SamplePageMessage": "Esimerkkisivu RulesEngine-moduulille"
+    "SamplePageMessage": "Esimerkkisivu RulesEngine-moduulille",
+    "Menu:RulesEngine": "OmaProjektiNimi"
   }
 }

@@ -1,0 +1,111 @@
+@page "/RulesEngine/RulesGroups/{RulesGroupId:guid}"
+@using System.Globalization
+@using Microsoft.AspNetCore.Authorization
+@using Volo.Abp.AspNetCore.Mvc.UI.Layout
+@using JS.Abp.RulesEngine.Permissions
+@using JS.Abp.RulesEngine.Web.Menus
+@using Microsoft.AspNetCore.Mvc.Localization
+@using JS.Abp.RulesEngine.Localization
+@using JS.Abp.RulesEngine.OperatorTypes
+@inject IHtmlLocalizer<RulesEngineResource> L
+@inject IAuthorizationService Authorization
+@model JS.Abp.RulesEngine.Web.Pages.RulesEngine.RulesGroups.DetailsModel
+@inject IPageLayout PageLayout
+@{
+    PageLayout.Content.Title = L["RulesMembers"].Value;
+    PageLayout.Content.BreadCrumb.Add(L["Menu:RulesGroups"].Value,"/RulesEngine/RulesGroups");
+    PageLayout.Content.MenuItemName = RulesEngineMenus.RulesMembers;
+}
+
+@section styles
+{
+
+}
+
+@section scripts
+{
+    <abp-script src="/Pages/RulesEngine/RulesGroups/details.js" />
+
+}
+
+@section content_toolbar {
+    
+
+}
+
+
+
+<abp-card>
+    <abp-card-body>
+	 <input id="RulesGroupId" type="hidden" asp-for="@Model.RulesGroupId" value="@Model.RulesGroupId" />
+        <abp-row id="OrderDetilsRow">
+            <div class="container mb-4">
+                <div class="row">
+                    <div class="col">
+                        <span class="text-muted">@L["GroupName"]</span>
+                        <p class="h4">@Model.RulesGroup.GroupName</p>
+                    </div>
+                    <div class="col">
+                        <span class="text-muted">@L["OperatorType"]</span>
+                        <p class="h5">
+                            @if (Model.RulesGroup.OperatorType == OperatorType.Or)
+                            {
+                                <span class="text-primary">
+                                    <i class="fa fa-info-circle"></i>
+                                </span>
+                            }
+                            else if (Model.RulesGroup.OperatorType == OperatorType.And)
+                            {
+                                <span class="text-success">
+                                    <i class="fa fa-info-circle"></i>
+                                </span>
+                            }
+
+                            @L[Model.RulesGroup.OperatorType.ToString()]
+                        </p>
+                    </div>
+                    <div class="col">
+                        <span class="text-muted">@L["Description"]</span>
+                       <p class="h4">@Model.RulesGroup.Description</p>
+                    </div>
+                </div>
+                <hr class="mb-4 mt-3" />
+            </div>
+        </abp-row>
+        <hr />
+
+        <abp-table striped-rows="true" id="RulesMembersTable">
+            <thead>
+
+
+            <tr>
+                <th id="th-buttons" class="dt-buttons table-header-buttons" colspan="5" rowspan="1">
+
+                    
+                    @if (await Authorization.IsGrantedAsync(RulesEnginePermissions.RulesMembers.Create))
+                    {
+                        <abp-button style="float: right;" id="NewRulesMemberButton"
+                                    text="@L["NewRulesMember"].Value"
+                                    icon="plus"
+                                    button-type="Primary"/>
+                    }
+                    <abp-button style="float: right;margin-right: 20px" id="ExportToExcelButton" 
+                                text="@L["ExportToExcel"].Value" 
+                                icon="download"  button-type="Primary"/>
+                </th>
+            </tr>
+            
+            <tr>
+                <th>@L["Actions"]</th>
+                <th>@L["Sequence"]</th>
+                <th>@L["Rule"]</th>
+                <th>@L["Description"]</th>
+                @* <th>@L["RulesGroup"]</th> *@
+               
+               
+            </tr>
+            </thead>
+        </abp-table>
+    </abp-card-body>
+</abp-card>
+

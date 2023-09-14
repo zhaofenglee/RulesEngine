@@ -26,8 +26,8 @@ public class ConsoleTestAppHostedService : IHostedService
         {
             await application.InitializeAsync();
 
-            var demo = application.ServiceProvider.GetRequiredService<ClientDemoService>();
-            await demo.RunAsync();
+            // var demo = application.ServiceProvider.GetRequiredService<ClientDemoService>();
+            // await demo.RunAsync();
 
             await application.ShutdownAsync();
         }

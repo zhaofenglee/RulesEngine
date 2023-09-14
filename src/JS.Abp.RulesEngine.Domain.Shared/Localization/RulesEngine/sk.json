@@ -1,7 +1,7 @@
 {
   "culture": "sk",
   "texts": {
-    "MyAccount": "Môj účet",
-    "SamplePageMessage": "Ukážka stránky pre modul RulesEngine"
+    "SamplePageMessage": "Ukážka stránky pre modul RulesEngine",
+    "Menu:RulesEngine": "RulesEngine"
   }
 }

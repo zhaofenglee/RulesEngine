@@ -1,0 +1,298 @@
+@page "/RulesEngine/RulesGroups"
+
+
+
+@attribute [Authorize(RulesEnginePermissions.RulesGroups.Default)]
+@using global::JS.Abp.RulesEngine.RulesGroups
+@using global::JS.Abp.RulesEngine.Localization
+@using global::JS.Abp.RulesEngine.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using global::JS.Abp.RulesEngine.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits RulesEngineComponentBase
+@inject IRulesGroupsAppService RulesGroupsAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+@using JS.Abp.RulesEngine.OperatorTypes
+
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["RulesGroups"]" BreadcrumbItems="BreadcrumbItems" Toolbar="Toolbar">
+
+</PageHeader>
+
+@* ************************* SEARCH ************************* *@
+<Card>
+    <CardBody>
+
+        <Form id="RulesGroupSearchForm" class="mb-3">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <TextEdit @bind-Text="@Filter.FilterText"
+                              Autofocus="true"
+                              Placeholder="@L["Search"]">
+                    </TextEdit>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <SubmitButton Form="RulesGroupSearchForm" Clicked="GetRulesGroupsAsync">
+                        <Icon Name="IconName.Search" Class="me-1"></Icon>@L["Search"]
+                    </SubmitButton>
+                </Addon>
+            </Addons>
+        </Form>
+        
+        <Row Class="mt-3 mb-3"> 
+            <div class="col-md-12">
+                <a href="javascript:;" class="text-decoration-none" @onclick="() => ShowAdvancedFilters = !ShowAdvancedFilters">@L["SeeAdvancedFilters"]</a>
+            </div>
+        </Row>
+        
+        <div style="display: @(!ShowAdvancedFilters ? "none" : "block")">
+            <Row>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["GroupName"]</FieldLabel>
+                        <TextEdit Text="@Filter.GroupName" TextChanged="@OnGroupNameChangedAsync" />                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["OperatorType"]</FieldLabel>
+                        <Select TValue="OperatorType?"
+		SelectedValue="@Filter.OperatorType"
+		SelectedValueChanged="@OnOperatorTypeChangedAsync">
+
+<SelectItem></SelectItem>
+
+@foreach(OperatorType value in Enum.GetValues(typeof(OperatorType)))
+{
+	<SelectItem Value="value">
+		@value
+	</SelectItem>
+}
+
+</Select>                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["Description"]</FieldLabel>
+                        <TextEdit Text="@Filter.Description" TextChanged="@OnDescriptionChangedAsync" />                       
+                    </Field>
+                </Column>
+            </Row>
+
+        </div>
+
+    </CardBody>
+</Card>
+
+@* ************************* DATA GRID ************************* *@
+<Card>
+    <CardBody>
+        <DataGrid TItem="RulesGroupDto"
+                  Data="RulesGroupList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="RulesGroupDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="RulesGroupDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="RulesGroupDto"
+                                          Visible="@CanEditRulesGroup"
+                                          Clicked="async () => await OpenRulesMembersAsync(context)"
+                                          Text="@L["EditDetails"]">
+                            </EntityAction>
+                            <EntityAction TItem="RulesGroupDto"
+                                          Visible="@CanEditRulesGroup"
+                                          Clicked="async () => await OpenEditRulesGroupModalAsync(context)"
+                                          Text="@L["Edit"]"></EntityAction>
+                            <EntityAction TItem="RulesGroupDto"
+                                          Visible="@CanDeleteRulesGroup"
+                                          Clicked="() => DeleteRulesGroupAsync(context)"
+                                          ConfirmationMessage="@(() => L["DeleteConfirmationMessage"])"
+                                          Text="@L["Delete"]"></EntityAction>
+                          
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+               
+              <DataGridColumn TItem="RulesGroupDto"
+                      Field="GroupName"
+                      Caption="@L["GroupName"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="RulesGroupDto"
+                      Field="OperatorType"
+                      Caption="@L["OperatorType"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:OperatorType.{context.OperatorType.ToString("d")}"]
+                    </DisplayTemplate>
+              </DataGridColumn>
+
+
+              <DataGridColumn TItem="RulesGroupDto"
+                      Field="Description"
+                      Caption="@L["Description"]">
+              </DataGridColumn>
+
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@* ************************* CREATE MODAL ************************* *@
+<Modal @ref="CreateRulesGroupModal" Closing="@CreateRulesGroupModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="CreateRulesGroupForm">
+            <ModalHeader>
+                <ModalTitle>@L["NewRulesGroup"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateRulesGroupModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@NewRulesGroupValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@NewRulesGroup"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["GroupName"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["OperatorType"]</FieldLabel>
+                        <Select TValue="OperatorType" @bind-SelectedValue="@NewRulesGroup.OperatorType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(OperatorType)))
+                            {
+                                <SelectItem TValue="OperatorType" Value="@((OperatorType) itemValue)">
+                                    @L[$"Enum:OperatorType.{((OperatorType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@NewRulesGroup.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateRulesGroupModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRulesGroupForm" Clicked="CreateRulesGroupAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>
+
+@* ************************* EDIT MODAL ************************* *@
+<Modal @ref="EditRulesGroupModal" Closing="@EditRulesGroupModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="EditRulesGroupForm">
+            <ModalHeader>
+                <ModalTitle>@L["Update"]</ModalTitle>
+                <CloseButton Clicked="CloseEditRulesGroupModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditingRulesGroupValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@EditingRulesGroup"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["GroupName"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["OperatorType"]</FieldLabel>
+                        <Select TValue="OperatorType" @bind-SelectedValue="@EditingRulesGroup.OperatorType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(OperatorType)))
+                            {
+                                <SelectItem TValue="OperatorType" Value="@((OperatorType) itemValue)">
+                                    @L[$"Enum:OperatorType.{((OperatorType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@EditingRulesGroup.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseEditRulesGroupModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRulesGroupForm" Clicked="UpdateRulesGroupAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>

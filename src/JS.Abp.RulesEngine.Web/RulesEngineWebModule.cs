@@ -1,4 +1,4 @@
-﻿using Microsoft.AspNetCore.Mvc.RazorPages;
+using Microsoft.AspNetCore.Mvc.RazorPages;
 using Microsoft.Extensions.DependencyInjection;
 using JS.Abp.RulesEngine.Localization;
 using JS.Abp.RulesEngine.Web.Menus;
@@ -52,7 +52,10 @@ public class RulesEngineWebModule : AbpModule
 
         Configure<RazorPagesOptions>(options =>
         {
-                //Configure authorization.
-            });
+            //Configure authorization.
+            options.Conventions.AuthorizePage("/Rules/Index", RulesEnginePermissions.Rules.Default);
+            options.Conventions.AuthorizePage("/RulesGroups/Index", RulesEnginePermissions.RulesGroups.Default);
+            options.Conventions.AuthorizePage("/RulesMembers/Index", RulesEnginePermissions.RulesMembers.Default);
+        });
     }
 }

@@ -1,0 +1,454 @@
+@page "/RulesEngine/Rules"
+
+
+
+@attribute [Authorize(RulesEnginePermissions.Rules.Default)]
+@using global::JS.Abp.RulesEngine.Rules
+@using global::JS.Abp.RulesEngine.Localization
+@using global::JS.Abp.RulesEngine.Shared
+@using Microsoft.AspNetCore.Authorization
+@using Microsoft.Extensions.Localization
+@using Microsoft.AspNetCore.Components.Web
+@using Blazorise
+@using Blazorise.Components
+@using Blazorise.DataGrid
+@using Volo.Abp.BlazoriseUI
+@using Volo.Abp.BlazoriseUI.Components
+@using Volo.Abp.ObjectMapping
+@using Volo.Abp.AspNetCore.Components.Messages
+@using Volo.Abp.AspNetCore.Components.Web.Theming.Layout
+@using global::JS.Abp.RulesEngine.Permissions
+@using Microsoft.AspNetCore.Components
+@using Volo.Abp.AspNetCore.Components.Web
+@using Volo.Abp.Http.Client
+@inherits RulesEngineComponentBase
+@inject IRulesAppService RulesAppService
+@inject IUiMessageService UiMessageService
+@inject IRemoteServiceConfigurationProvider RemoteServiceConfigurationProvider
+@inject NavigationManager NavigationManager
+@using JS.Abp.RulesEngine.ErrorTypes
+
+@using JS.Abp.RulesEngine.RuleExpressionTypes
+
+
+@* ************************* PAGE HEADER ************************* *@
+<PageHeader Title="@L["Rules"]" BreadcrumbItems="BreadcrumbItems" Toolbar="Toolbar">
+
+</PageHeader>
+
+@* ************************* SEARCH ************************* *@
+<Card>
+    <CardBody>
+
+        <Form id="RuleSearchForm" class="mb-3">
+            <Addons>
+                <Addon AddonType="AddonType.Body">
+                    <TextEdit @bind-Text="@Filter.FilterText"
+                              Autofocus="true"
+                              Placeholder="@L["Search"]">
+                    </TextEdit>
+                </Addon>
+                <Addon AddonType="AddonType.End">
+                    <SubmitButton Form="RuleSearchForm" Clicked="GetRulesAsync">
+                        <Icon Name="IconName.Search" Class="me-1"></Icon>@L["Search"]
+                    </SubmitButton>
+                </Addon>
+            </Addons>
+        </Form>
+        
+        <Row Class="mt-3 mb-3"> 
+            <div class="col-md-12">
+                <a href="javascript:;" class="text-decoration-none" @onclick="() => ShowAdvancedFilters = !ShowAdvancedFilters">@L["SeeAdvancedFilters"]</a>
+            </div>
+        </Row>
+        
+        <div style="display: @(!ShowAdvancedFilters ? "none" : "block")">
+            <Row>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["RuleCode"]</FieldLabel>
+                        <TextEdit Text="@Filter.RuleCode" TextChanged="@OnRuleCodeChangedAsync" />                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["SuccessEvent"]</FieldLabel>
+                        <TextEdit Text="@Filter.SuccessEvent" TextChanged="@OnSuccessEventChangedAsync" />                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["ErrorMessage"]</FieldLabel>
+                        <TextEdit Text="@Filter.ErrorMessage" TextChanged="@OnErrorMessageChangedAsync" />                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["ErrorType"]</FieldLabel>
+                        <Select TValue="ErrorType?"
+		SelectedValue="@Filter.ErrorType"
+		SelectedValueChanged="@OnErrorTypeChangedAsync">
+
+<SelectItem></SelectItem>
+
+@foreach(ErrorType value in Enum.GetValues(typeof(ErrorType)))
+{
+	<SelectItem Value="value">
+		@value
+	</SelectItem>
+}
+
+</Select>                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
+                        <Select TValue="RuleExpressionType?"
+		SelectedValue="@Filter.RuleExpressionType"
+		SelectedValueChanged="@OnRuleExpressionTypeChangedAsync">
+
+<SelectItem></SelectItem>
+
+@foreach(RuleExpressionType value in Enum.GetValues(typeof(RuleExpressionType)))
+{
+	<SelectItem Value="value">
+		@value
+	</SelectItem>
+}
+
+</Select>                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["Expression"]</FieldLabel>
+                        <TextEdit Text="@Filter.Expression" TextChanged="@OnExpressionChangedAsync" />                       
+                    </Field>
+                </Column>
+                <Column ColumnSize="ColumnSize.Is3">
+                    <Field>
+                        <FieldLabel>@L["Description"]</FieldLabel>
+                        <TextEdit Text="@Filter.Description" TextChanged="@OnDescriptionChangedAsync" />                       
+                    </Field>
+                </Column>
+            </Row>
+
+        </div>
+
+    </CardBody>
+</Card>
+
+@* ************************* DATA GRID ************************* *@
+<Card>
+    <CardBody>
+        <DataGrid TItem="RuleDto"
+                  Data="RuleList"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize">
+            <DataGridColumns>
+                <DataGridEntityActionsColumn TItem="RuleDto" @ref="@EntityActionsColumn">
+                    <DisplayTemplate>
+                        <EntityActions TItem="RuleDto" EntityActionsColumn="@EntityActionsColumn">
+                            <EntityAction TItem="RuleDto"
+                                          Visible="@CanEditRule"
+                                          Clicked="async () => await OpenEditRuleModalAsync(context)"
+                                          Text="@L["Edit"]"></EntityAction>
+                            <EntityAction TItem="RuleDto"
+                                          Visible="@CanDeleteRule"
+                                          Clicked="() => DeleteRuleAsync(context)"
+                                          ConfirmationMessage="@(()=> L["DeleteConfirmationMessage"])"
+                                          Text="@L["Delete"]"></EntityAction>
+
+                        </EntityActions>
+                    </DisplayTemplate>
+                </DataGridEntityActionsColumn>
+               
+              <DataGridColumn TItem="RuleDto"
+                      Field="RuleCode"
+                      Caption="@L["RuleCode"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="SuccessEvent"
+                      Caption="@L["SuccessEvent"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="ErrorMessage"
+                      Caption="@L["ErrorMessage"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="ErrorType"
+                      Caption="@L["ErrorType"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:ErrorType.{context.ErrorType.ToString("d")}"]
+                    </DisplayTemplate>
+              </DataGridColumn>
+
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="RuleExpressionType"
+                      Caption="@L["RuleExpressionType"]">
+                    <DisplayTemplate>
+                        @L[$"Enum:RuleExpressionType.{context.RuleExpressionType.ToString("d")}"]
+                    </DisplayTemplate>
+              </DataGridColumn>
+
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="Expression"
+                      Caption="@L["Expression"]">
+              </DataGridColumn>
+
+              <DataGridColumn TItem="RuleDto"
+                      Field="Description"
+                      Caption="@L["Description"]">
+              </DataGridColumn>
+
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+</Card>
+
+@* ************************* CREATE MODAL ************************* *@
+<Modal @ref="CreateRuleModal" Closing="@CreateRuleModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="CreateRuleForm">
+            <ModalHeader>
+                <ModalTitle>@L["NewRule"]</ModalTitle>
+                <CloseButton Clicked="CloseCreateRuleModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@NewRuleValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@NewRule"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["RuleCode"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["SuccessEvent"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["ErrorMessage"] *</FieldLabel>
+                            <TextEdit @bind-Text="@NewRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["ErrorType"]</FieldLabel>
+                        <Select TValue="ErrorType" @bind-SelectedValue="@NewRule.ErrorType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(ErrorType)))
+                            {
+                                <SelectItem TValue="ErrorType" Value="@((ErrorType) itemValue)">
+                                    @L[$"Enum:ErrorType.{((ErrorType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Field>
+                        <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
+                        <Select TValue="RuleExpressionType" @bind-SelectedValue="@NewRule.RuleExpressionType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(RuleExpressionType)))
+                            {
+                                <SelectItem TValue="RuleExpressionType" Value="@((RuleExpressionType) itemValue)">
+                                    @L[$"Enum:RuleExpressionType.{((RuleExpressionType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Expression"]</FieldLabel>
+                            <MemoEdit @bind-Text="@NewRule.Expression"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@NewRule.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateRuleModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRuleForm" Clicked="CreateRuleAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>
+
+@* ************************* EDIT MODAL ************************* *@
+<Modal @ref="EditRuleModal" Closing="@EditRuleModal.CancelClosingModalWhenFocusLost">
+    <ModalContent Centered="true">
+
+        <Form id="EditRuleForm">
+            <ModalHeader>
+                <ModalTitle>@L["Update"]</ModalTitle>
+                <CloseButton Clicked="CloseEditRuleModalAsync" />
+            </ModalHeader>
+            <ModalBody>
+                <Validations @ref="@EditingRuleValidations"
+                            Mode="ValidationMode.Auto"
+                            Model="@EditingRule"
+                            ValidateOnLoad="false">
+                     
+                    
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["RuleCode"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["SuccessEvent"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["ErrorMessage"] *</FieldLabel>
+                            <TextEdit @bind-Text="@EditingRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </TextEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Field>
+                        <FieldLabel>@L["ErrorType"]</FieldLabel>
+                        <Select TValue="ErrorType" @bind-SelectedValue="@EditingRule.ErrorType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(ErrorType)))
+                            {
+                                <SelectItem TValue="ErrorType" Value="@((ErrorType) itemValue)">
+                                    @L[$"Enum:ErrorType.{((ErrorType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Field>
+                        <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
+                        <Select TValue="RuleExpressionType" @bind-SelectedValue="@EditingRule.RuleExpressionType" >
+                            @foreach (var itemValue in Enum.GetValues(typeof(RuleExpressionType)))
+                            {
+                                <SelectItem TValue="RuleExpressionType" Value="@((RuleExpressionType) itemValue)">
+                                    @L[$"Enum:RuleExpressionType.{((RuleExpressionType) itemValue).ToString("d")}"]
+                                </SelectItem>
+                            }
+                        </Select>
+                    </Field>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Expression"]</FieldLabel>
+                            <MemoEdit @bind-Text="@EditingRule.Expression"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    <Validation>
+                        <Field>
+                            <FieldLabel>@L["Description"]</FieldLabel>
+                            <MemoEdit @bind-Text="@EditingRule.Description"  >
+                                <Feedback>
+                                    <ValidationError />
+                                </Feedback>
+                            </MemoEdit>
+                        </Field>
+                    </Validation>
+
+
+                    
+                    
+                </Validations>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseEditRuleModalAsync">
+                    @L["Cancel"]
+                </Button>
+                <SubmitButton Form="CreateRuleForm" Clicked="UpdateRuleAsync" />
+
+            </ModalFooter>
+        </Form>
+
+    </ModalContent>
+</Modal>

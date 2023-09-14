@@ -1,7 +1,7 @@
 {
   "culture": "sl",
   "texts": {
-    "MyAccount": "Moj račun",
-    "SamplePageMessage": "Vzorčna stran za modul RulesEngine"
+    "SamplePageMessage": "Vzorčna stran za modul RulesEngine",
+    "Menu:RulesEngine": "Ime mojega projekta"
   }
 }

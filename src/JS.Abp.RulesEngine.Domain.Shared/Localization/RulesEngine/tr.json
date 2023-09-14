@@ -1,7 +1,7 @@
 {
   "culture": "tr",
   "texts": {
-    "MyAccount":  "Hesabım",
-    "SamplePageMessage": "RulesEngine modulünden örnek bir sayfa"
+    "SamplePageMessage": "RulesEngine modulünden örnek bir sayfa",
+    "Menu:RulesEngine": "Proje Adı"
   }
 }

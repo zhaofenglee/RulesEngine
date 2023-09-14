@@ -1,0 +1,53 @@
+@page
+@using Microsoft.AspNetCore.Mvc.Localization
+@using JS.Abp.RulesEngine.Localization
+@using Volo.Abp.AspNetCore.Mvc.UI.Bootstrap.TagHelpers.Modal
+@using JS.Abp.RulesEngine.Web.Pages.RulesEngine.Rules
+@using JS.Abp.RulesEngine.Rules;
+@using System.Globalization
+@inject IHtmlLocalizer<RulesEngineResource> L
+@model CreateModalModel
+@{
+    Layout = null;
+}
+
+
+<form data-ajaxForm="true" asp-page="/RulesEngine/Rules/CreateModal" autocomplete="off">
+    <abp-modal id="RuleCreateModal">
+        <abp-modal-header title="@L["NewRule"].Value"></abp-modal-header>
+
+        <abp-modal-body>
+
+                    
+
+            <abp-input asp-for="Rule.RuleCode"   />
+
+
+            <abp-input asp-for="Rule.SuccessEvent"   />
+
+
+            <abp-input asp-for="Rule.ErrorMessage"   />
+
+
+            <abp-select asp-for="Rule.ErrorType"   />
+
+
+            <abp-select asp-for="Rule.RuleExpressionType"   />
+
+
+            <abp-input asp-for="Rule.Expression" text-area  />
+
+
+            <abp-input asp-for="Rule.Description" text-area  />
+
+                    
+                
+
+
+        </abp-modal-body>
+
+        <abp-modal-footer buttons="@(AbpModalButtons.Cancel|AbpModalButtons.Save)">
+
+        </abp-modal-footer>
+    </abp-modal>
+</form>
