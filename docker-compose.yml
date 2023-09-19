@@ -4,22 +4,24 @@ services:
   sqlserver:
     image: mcr.microsoft.com/mssql/server
     volumes:
-      - dbdata:/var/opt/mssql
-  
-  identity-server:
-    build:
-      context: ../../
-      dockerfile: templates/service/host/IdentityServerHost/Dockerfile
-    depends_on:
-      - sqlserver      
+      - dbdata:/var/opt/mssql  
+    environment:
+      - SA_PASSWORD=yourStrong(!)Password
+      - ACCEPT_EULA=Y
+    ports:
+      - "51599:1433"
   
   rules-engine:
     build:
-      context: ../../
-      dockerfile: templates/service/host/JS.Abp.RulesEngine.Host/Dockerfile
+      context: .
+      dockerfile: /host/JS.Abp.RulesEngine.Blazor.Server.Host/Dockerfile
+    environment:
+        - ASPNETCORE_URLS=http://0.0.0.0:80
+        - ConnectionStrings__Default=Server=sqlserver;Database=RulesEngine_ModuleDb;Trusted_Connection=True;User=sa;Password=yourStrong(!)Password;Integrated Security=false
     depends_on:
       - sqlserver
-      - identity-server
+    ports:
+      - "51601:80"
 
 volumes:
   dbdata:
