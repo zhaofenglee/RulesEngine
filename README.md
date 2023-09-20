@@ -12,7 +12,7 @@
 MVC和Blazor已经实现了维护规则的页面，如果你的项目中没有使用这两个框架，你可以自己实现维护规则的页面
 
 ### 2.在你的项目中使用
-
+#### 2.1使用Store(参考测试项目RulesEngineStoreTests)
 ````csharp
         protected IRulesEngineStore rulesEngine => LazyServiceProvider.LazyGetRequiredService<IRulesEngineStore>();
         //如下是维护的规则，正式代码下可不用
@@ -34,3 +34,29 @@ MVC和Blazor已经实现了维护规则的页面，如果你的项目中没有�
         var result3 = await _rulesEngineStore.ExecuteRulesAsync("Test1", new TestDto(){Name = "TestRule",Age = 20});
         result3.IsSuccess.ShouldBeFalse();
 ````
+#### 2.2使用API(参考测试项目RuleApplicationTests,RulesGroupApplicationTests)
+```csharp
+//使用规则引擎组
+private readonly IRulesGroupsAppService _rulesGroupsAppService;
+
+ var result1 = await _rulesAppService.VerifyRuleAsync(new VerifyRuleDto()
+            {
+                RuleCode = "TestRule1",
+                ExtraProperties = new ExtraPropertyDictionary()//支持以Dictionary<string,object>传入
+                {
+                    {"Name", "Test"},
+                    {"Age", 20}
+                },
+            });
+//使用规则引擎
+private readonly IRulesAppService _rulesAppService;
+var result1 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
+        {
+            GroupName = "TestRule1",
+            ExtraProperties = new ExtraPropertyDictionary()//支持以Dictionary<string,object>传入
+            {
+                {"Name", "Test"},
+                {"Age", 20}
+            },
+        });
+```

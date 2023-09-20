@@ -22,9 +22,15 @@ namespace JS.Abp.RulesEngine.RulesGroups
 {
     public class RulesGroupsAppService : RulesGroupsAppServiceBase, IRulesGroupsAppService
     {
+        protected IRulesEngineStore rulesEngine => LazyServiceProvider.LazyGetRequiredService<IRulesEngineStore>();
         public RulesGroupsAppService(IRulesGroupRepository rulesGroupRepository, RulesGroupManager rulesGroupManager, IDistributedCache<RulesGroupExcelDownloadTokenCacheItem, string> excelDownloadTokenCache)
             : base(rulesGroupRepository, rulesGroupManager, excelDownloadTokenCache)
         {
+        }
+
+        public virtual async Task<RuleResult> VerifyRulesGroupAsync(VerifyRuleGroupDto input)
+        {
+            return await rulesEngine.ExecuteRulesGroupAsync(input.GroupName, input.ExtraProperties);
         }
     }
 }

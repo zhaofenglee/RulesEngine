@@ -2,6 +2,8 @@ using System;
 using System.Linq;
 using Shouldly;
 using System.Threading.Tasks;
+using JS.Abp.RulesEngine.Stores;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Xunit;
 
@@ -114,6 +116,70 @@ namespace JS.Abp.RulesEngine.Rules
             var result = await _ruleRepository.FindAsync(c => c.Id == Guid.Parse("60342e5a-dc76-47a3-9cb1-8a1eb19341cb"));
 
             result.ShouldBeNull();
+        }
+        
+        [Fact]
+        public async Task VerifyRuleAsync()
+        {
+            // Act
+            var result = await _rulesAppService.GetListAsync(new GetRulesInput());
+
+            // Assert
+            result.TotalCount.ShouldBe(2);
+            result.Items.Count.ShouldBe(2);
+            result.Items.Any(x => x.Id == Guid.Parse("60342e5a-dc76-47a3-9cb1-8a1eb19341cb")).ShouldBe(true);
+            result.Items.Any(x => x.Id == Guid.Parse("4e3b6ec6-1ed3-4e5c-a057-d863159f7cb2")).ShouldBe(true);
+            
+            
+            // Arrange
+            //创建一个Test1规则
+            var input = new Rule
+            {
+                RuleCode = "Test1",
+                SuccessEvent = "True",
+                ErrorMessage = "False",
+                ErrorType = default,
+                RuleExpressionType = default,
+                Expression = "x.Name == \"Test\" && Convert.ToInt32(x.Age) >=20" //需要注意是如果是Object类型判断需要转换类型再判断
+            };
+            // Act
+            var insertResult =  await _ruleRepository.InsertAsync(input);
+        
+            // Assert
+            //TestRule1不存在，会默认返回True
+            ExtraPropertyDictionary extraPropertyDictionary = new ExtraPropertyDictionary();
+            var result1 = await _rulesAppService.VerifyRuleAsync(new VerifyRuleDto()
+            {
+                RuleCode = "TestRule1",
+                ExtraProperties = new ExtraPropertyDictionary()
+                {
+                    {"Name", "Test"},
+                    {"Age", 20}
+                },
+            });
+            result1.IsSuccess.ShouldBeTrue();
+            //Test1判断通过返回True
+            var result2 = await _rulesAppService.VerifyRuleAsync(new VerifyRuleDto()
+            {
+                RuleCode = "Test1",
+                ExtraProperties = new ExtraPropertyDictionary()
+                {
+                    {"Name", "Test"},
+                    {"Age", 20}
+                },
+            });
+            result2.IsSuccess.ShouldBeTrue();
+            //Test1判断不通过False
+            var result3 = await _rulesAppService.VerifyRuleAsync(new VerifyRuleDto()
+            {
+                RuleCode = "Test1",
+                ExtraProperties = new ExtraPropertyDictionary()
+                {
+                    {"Name", "Test"},
+                    {"Age", 19}
+                },
+            });
+            result3.IsSuccess.ShouldBeFalse();
         }
     }
 }

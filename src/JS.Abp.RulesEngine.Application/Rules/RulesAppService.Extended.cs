@@ -22,9 +22,16 @@ namespace JS.Abp.RulesEngine.Rules
 {
     public class RulesAppService : RulesAppServiceBase, IRulesAppService
     {
+        protected IRulesEngineStore rulesEngine => LazyServiceProvider.LazyGetRequiredService<IRulesEngineStore>();
         public RulesAppService(IRuleRepository ruleRepository, RuleManager ruleManager, IDistributedCache<RuleExcelDownloadTokenCacheItem, string> excelDownloadTokenCache)
             : base(ruleRepository, ruleManager, excelDownloadTokenCache)
         {
+        }
+
+        public virtual async Task<RuleResult> VerifyRuleAsync(VerifyRuleDto input)
+        {
+            
+            return await rulesEngine.ExecuteRulesAsync(input.RuleCode, input.ExtraProperties);
         }
     }
 }
