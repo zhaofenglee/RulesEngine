@@ -22,6 +22,12 @@ namespace JS.Abp.RulesEngine.Rules
         {
             _rulesAppService = rulesAppService;
         }
+        [HttpGet]
+        [Route("verify-rule")]
+        public virtual Task<RuleResult> VerifyRuleAsync(VerifyRuleDto input)
+        {
+            return _rulesAppService.VerifyRuleAsync(input);
+        }
 
         [HttpGet]
         public virtual Task<PagedResultDto<RuleDto>> GetListAsync(GetRulesInput input)

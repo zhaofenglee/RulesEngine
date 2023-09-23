@@ -24,6 +24,13 @@ namespace JS.Abp.RulesEngine.RulesGroups
         }
 
         [HttpGet]
+        [Route("verify-rules-group")]
+        public virtual Task<RuleResult> VerifyRulesGroupAsync(VerifyRuleGroupDto input)
+        {
+            return _rulesGroupsAppService.VerifyRulesGroupAsync(input);
+        }
+
+        [HttpGet]
         public virtual Task<PagedResultDto<RulesGroupDto>> GetListAsync(GetRulesGroupsInput input)
         {
             return _rulesGroupsAppService.GetListAsync(input);

@@ -33,6 +33,20 @@ public class RulesEngineMenuContributor : IMenuContributor
         administration.SetSubItemOrder(IdentityMenuNames.GroupName, 2);
         administration.SetSubItemOrder(SettingManagementMenus.GroupName, 3);
 
+        context.Menu.AddItem(
+            new ApplicationMenuItem(
+                "BooksStore",
+                "BooksStore",
+                icon: "fa fa-book"
+            ).AddItem(
+                new ApplicationMenuItem(
+                    "BooksStore.Books",
+                    "BooksStore",
+                    url: "/books"
+                )
+            )
+        );
+
         return Task.CompletedTask;
     }
 }

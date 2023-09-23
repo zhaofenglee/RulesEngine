@@ -1,0 +1,137 @@
+﻿@page "/books"
+@using Volo.Abp.Application.Dtos
+@using Microsoft.Extensions.Localization
+@using JS.Abp.RulesEngine.RulesGroups
+@using Volo.Abp.Data
+@inject IRulesGroupsAppService RulesGroupsAppService;
+
+<Card>
+    <CardHeader>
+        <Row Class="justify-content-between">
+                <Column ColumnSize="ColumnSize.IsAuto">
+                   <h2>Books</h2>
+                </Column>
+                <Column ColumnSize="ColumnSize.IsAuto">
+                    <Button Color="Color.Primary"
+                            Clicked="OpenCreateModalAsync">NewBook</Button>
+                </Column>
+            </Row>
+    </CardHeader>
+    <CardBody>
+        <DataGrid TItem="BookDto"
+                  Data="Entities"
+                  ReadData="OnDataGridReadAsync"
+                  TotalItems="TotalCount"
+                  ShowPager="true"
+                  Responsive="true"
+                  PageSize="PageSize"
+                  >
+            <DataGridColumns>
+                <DataGridColumn TItem="BookDto"
+                                Field="@nameof(BookDto.Name)"
+                                Caption="Name"></DataGridColumn>
+               
+
+                <DataGridColumn TItem="BookDto"
+                                Field="@nameof(BookDto.Price)"
+                                Caption="Price">
+                </DataGridColumn>
+             
+            </DataGridColumns>
+        </DataGrid>
+    </CardBody>
+    <CardFooter>
+        <h3>Discount:@Discount</h3>
+    </CardFooter>
+</Card>
+
+<Modal @ref="@CreateBookModal">
+    <ModalContent IsCentered="true">
+        <Form>
+            <ModalHeader>
+                <ModalTitle>NewBook</ModalTitle>
+                <CloseButton Clicked="CloseCreateModalAsync"/>
+            </ModalHeader>
+            <ModalBody>
+                <Field>
+                    <FieldLabel>Name</FieldLabel>
+                    <TextEdit @bind-Text="@NewBook.Name">
+                    </TextEdit>
+                </Field>
+                <Field>
+                    <FieldLabel>Price</FieldLabel>
+                    <NumericEdit TValue="int" @bind-Value="NewBook.Price"/>
+                </Field>
+            </ModalBody>
+            <ModalFooter>
+                <Button Color="Color.Secondary"
+                        Clicked="CloseCreateModalAsync">Cancel</Button>
+                <Button Color="Color.Primary"
+                        Type="@ButtonType.Submit"
+                        PreventDefaultOnSubmit="true"
+                        Clicked="CreateEntityAsync">Save</Button>
+            </ModalFooter>
+        </Form>
+    </ModalContent>
+</Modal>
+
+
+@code{
+    private IReadOnlyList<BookDto> Entities { get; set; }
+    private List<BookDto> BookList { get; set; }
+    private int TotalCount { get; set; }
+    private int PageSize { get; } = LimitedResultRequestDto.DefaultMaxResultCount;
+    private BookDto NewBook { get; set; }
+    private Modal CreateBookModal { get; set; } = new();
+    private string Discount { get; set; }
+    public Books()
+    {
+        NewBook = new BookDto();
+        BookList = new();
+        Entities = new List<BookDto>();
+    }
+    private async Task OnDataGridReadAsync(DataGridReadDataEventArgs<BookDto> e)
+    {
+        await InvokeAsync(StateHasChanged);
+    }
+    
+    private async Task OpenCreateModalAsync()
+    {
+        NewBook = new BookDto{
+                
+                
+        };
+        await CreateBookModal.Show();
+    }
+    
+    private async Task CloseCreateModalAsync()
+    {
+      
+        await CreateBookModal.Hide();
+    }
+    
+    private async Task CreateEntityAsync()
+    {
+        BookList.Add(NewBook);
+        Entities = BookList.ToList();
+        TotalCount = BookList.Count;
+        await CreateBookModal.Hide();
+        //这里可以使用规则引擎判断是否拥有折扣
+        var result = await RulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
+        {
+            GroupName = "TestPrice",
+            ExtraProperties = new ExtraPropertyDictionary()
+            {
+                {"Price", BookList.Sum(c=>c.Price)}
+            },
+        });
+        if (result.IsSuccess)
+        {
+            if (!result.SuccessEvent.IsNullOrWhiteSpace())
+            {
+                Discount = result.SuccessEvent;
+            }
+        }
+        await InvokeAsync(StateHasChanged);
+    }
+}
