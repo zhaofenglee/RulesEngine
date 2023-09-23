@@ -60,3 +60,41 @@ var result1 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleG
             },
         });
 ```
+
+## Sample
+以电商为例，假设有如下规则
+* 1.价格大于1000元满减500元
+* 2.价格大于500元满减300元
+* 3.价格大于200元满减100元
+* 4.价格大于100元满减20元
+### 1.维护规则
+![2023092301](/docs/images/2023092301.png)
+### 2.维护规则组
+#### 2.1建一个规则组”TestPrice“
+#### 2.2把规则1-4添加到规则组”TestPrice“
+![2023092302](/docs/images/2023092302.png)
+### 3.使用规则引擎
+* 1.可以现在前端判断一次，把结果返回前端
+* 2.后端再判断一次，判断前端传入和后端计算结果是否一致
+参考代码:JS.Abp.RulesEngine.Blazor.Server.Host/Pages/Books.razor
+````csharp
+//判断是否有折扣
+ var result = await RulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
+        {
+            GroupName = "TestPrice",
+            ExtraProperties = new ExtraPropertyDictionary()
+            {
+                {"Price", BookList.Sum(c=>c.Price)}
+            },
+        });
+        if (result.IsSuccess)
+        {
+            if (!result.SuccessEvent.IsNullOrWhiteSpace())
+            {
+                Discount = result.SuccessEvent;
+            }
+        }
+
+
+````
+![2023092303](/docs/images/2023092303.png)
