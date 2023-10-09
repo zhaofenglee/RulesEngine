@@ -6,10 +6,11 @@
     <TargetFramework>net7.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RootNamespace>JS.Abp.RulesEngine</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="7.4.0-rc.3" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="7.4.0" />
     <ProjectReference Include="..\JS.Abp.RulesEngine.Domain\JS.Abp.RulesEngine.Domain.csproj" />
   </ItemGroup>
 
