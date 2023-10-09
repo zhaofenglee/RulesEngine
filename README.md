@@ -7,6 +7,50 @@
 * 如果传入规则不存在，默认会判断通过(返回True)
 * 表达式默认是以x.开头，x.后面的是传入的数据集的属性名
 
+## 准备工作
+
+### 1.安装 NuGet packages.
+* JS.Abp.RulesEngine.Application
+* JS.Abp.RulesEngine.Application.Contracts
+* JS.Abp.RulesEngine.Domain
+* JS.Abp.RulesEngine.Domain.Shared
+* JS.Abp.RulesEngine.EntityFrameworkCore
+* JS.Abp.RulesEngine.HttpApi
+* JS.Abp.RulesEngine.HttpApi.Client
+
+*(Optional)  JS.Abp.RulesEngine.Blazor
+*(Optional)  JS.Abp.RulesEngine.Blazor.Server
+*(Optional)  JS.Abp.RulesEngine.Blazor.WebAssembly
+*(Optional)  JS.Abp.RulesEngine.Web
+
+### 2.添加“依赖”属性以配置模块
+* [DependsOn(typeof(RulesEngineApplicationModule))]
+* [DependsOn(typeof(RulesEngineApplicationContractsModule))]
+* [DependsOn(typeof(RulesEngineDomainModule))]
+* [DependsOn(typeof(RulesEngineDomainSharedModule))]
+* [DependsOn(typeof(RulesEngineEntityFrameworkCoreModule))] OR [DependsOn(typeof(RulesEngineMongoDbModule))]
+* [DependsOn(typeof(RulesEngineHttpApiModule))]
+* [DependsOn(typeof(RulesEngineHttpApiClientModule))]
+
+
+*(Optional)  [DependsOn(typeof(RulesEngineBlazorModule))]
+*(Optional)  [DependsOn(typeof(RulesEngineBlazorServerModule))]
+*(Optional)  [DependsOn(typeof(RulesEngineBlazorWebAssemblyModule))]
+*(Optional)  [DependsOn(typeof(RulesEngineWebModule))]
+
+### *若使用MongoDb，以下步骤可以忽略
+### 3. 在你的Dbcontext添加 ` builder.ConfigureRulesEngine();`
+
+### 4. 添加 EF Core 迁移并更新数据库
+在 YourProject.EntityFrameworkCore 项目的目录中打开命令行终端，然后键入以下命令：
+
+````bash
+> dotnet ef migrations add Added_RulesEngine
+````
+````bash
+> dotnet ef database update
+````
+
 ## 如何使用
 ### 1.维护规则
 MVC和Blazor已经实现了维护规则的页面，如果你的项目中没有使用这两个框架，你可以自己实现维护规则的页面

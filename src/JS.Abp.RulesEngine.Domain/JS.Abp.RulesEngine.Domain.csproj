@@ -6,10 +6,11 @@
     <TargetFrameworks>netstandard2.0;netstandard2.1;net7.0</TargetFrameworks>
     <Nullable>enable</Nullable>
     <RootNamespace>JS.Abp.RulesEngine</RootNamespace>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.4.0-rc.3" />
+    <PackageReference Include="Volo.Abp.Ddd.Domain" Version="7.4.0" />
     <ProjectReference Include="..\JS.Abp.RulesEngine.Domain.Shared\JS.Abp.RulesEngine.Domain.Shared.csproj" />
   </ItemGroup>
 
