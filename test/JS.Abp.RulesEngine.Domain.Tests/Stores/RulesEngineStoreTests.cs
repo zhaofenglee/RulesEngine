@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
 using JS.Abp.RulesEngine.OperatorTypes;
 using JS.Abp.RulesEngine.Rules;
 using JS.Abp.RulesEngine.RulesGroups;
 using JS.Abp.RulesEngine.RulesMembers;
 using Shouldly;
+using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
 using Xunit;
 
@@ -52,7 +54,38 @@ public class RulesEngineStoreTests : RulesEngineDomainTestBase
         //Test1判断不通过False
         var result3 = await _rulesEngineStore.ExecuteRulesAsync("Test1", new TestDto(){Name = "TestRule",Age = 20});
         result3.IsSuccess.ShouldBeFalse();
-
+        
+        var input2 = new Rule
+        {
+            RuleCode = "Test2",
+            SuccessEvent = "True",
+            ErrorMessage = "False",
+            ErrorType = default,
+            RuleExpressionType = default,
+            Expression = "x.Name == \"Test\""
+        };
+        // var extraProperties = new ExtraPropertyDictionary();
+        // extraProperties.Add("Name", "Test");
+        // extraProperties.Add("Title", "1");
+        // extraProperties.Add("Desc", "Test测试");
+        Dictionary<string, object> extraProperties = new Dictionary<string, object>()
+        {
+            { "Name", "Test" },
+            { "Title", "1" },
+            {"Desc", "Test测试"}
+        };
+        
+        var insertDictResult2 =  await _ruleRepository.InsertAsync(input2);
+        var resultDict2 = await _rulesEngineStore.ExecuteRulesAsync("Test2", extraProperties
+            // new Dictionary<string, object>()
+            // {
+            //     { "Name", "Test" },
+            //     { "Title", "1" },
+            // }
+            
+        );
+        resultDict2.IsSuccess.ShouldBeTrue();
+        
     }
  
     [Fact]

@@ -30,8 +30,12 @@ namespace JS.Abp.RulesEngine.Rules
 
         public virtual async Task<RuleResult> VerifyRuleAsync(VerifyRuleDto input)
         {
-            
-            return await rulesEngine.ExecuteRulesAsync(input.RuleCode, input.ExtraProperties);
+            Dictionary<string, string?> extraProperties = new Dictionary<string, string?>();
+            foreach (var item in input.ExtraProperties)
+            {
+                extraProperties.Add(item.Key, item.Value?.ToString());
+            }
+            return await rulesEngine.ExecuteRulesAsync(input.RuleCode, extraProperties);
         }
     }
 }
