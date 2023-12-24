@@ -5,11 +5,13 @@ using System.Threading.Tasks;
 using JS.Abp.RulesEngine.Stores;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
 using Xunit;
 
 namespace JS.Abp.RulesEngine.Rules
 {
-    public class RulesAppServiceTests : RulesEngineApplicationTestBase
+    public abstract class RulesAppServiceTests<TStartupModule> : RulesEngineApplicationTestBase<TStartupModule>
+        where TStartupModule : IAbpModule
     {
         private readonly IRulesAppService _rulesAppService;
         private readonly IRepository<Rule, Guid> _ruleRepository;

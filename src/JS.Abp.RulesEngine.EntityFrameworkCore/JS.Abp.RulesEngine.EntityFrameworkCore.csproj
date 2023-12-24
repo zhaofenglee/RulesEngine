@@ -3,14 +3,14 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFrameworks>net7.0;</TargetFrameworks>
+    <TargetFrameworks>net8.0;</TargetFrameworks>
     <Nullable>enable</Nullable>
     <RootNamespace>JS.Abp.RulesEngine</RootNamespace>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="7.4.4" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore" Version="$(VoloAbpPackageVersion)" />
     <ProjectReference Include="..\JS.Abp.RulesEngine.Domain\JS.Abp.RulesEngine.Domain.csproj" />
   </ItemGroup>
 

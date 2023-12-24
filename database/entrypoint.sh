@@ -5,8 +5,8 @@ until /opt/mssql-tools/bin/sqlcmd -S sqlserver -U SA -P $SA_PASSWORD -Q 'SELECT 
 sleep 1
 done
 
-/opt/mssql-tools/bin/sqlcmd -S sqlserver -U SA -P $SA_PASSWORD -Q "CREATE DATABASE [$IdentityServer_DB]"
+/opt/mssql-tools/bin/sqlcmd -S sqlserver -U SA -P $SA_PASSWORD -Q "CREATE DATABASE [$AuthServer_DB]"
 /opt/mssql-tools/bin/sqlcmd -S sqlserver -U SA -P $SA_PASSWORD -Q "CREATE DATABASE [$RulesEngine_DB]"
 
-/opt/mssql-tools/bin/sqlcmd -d $IdentityServer_DB -S sqlserver -U sa -P $SA_PASSWORD -i migrations-IdentityServerHost.sql
+/opt/mssql-tools/bin/sqlcmd -d $AuthServer_DB -S sqlserver -U sa -P $SA_PASSWORD -i migrations-AuthServerHost.sql
 /opt/mssql-tools/bin/sqlcmd -d $RulesEngine_DB -S sqlserver -U sa -P $SA_PASSWORD -i migrations-RulesEngine.sql

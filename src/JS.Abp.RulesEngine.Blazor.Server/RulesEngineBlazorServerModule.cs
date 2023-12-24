@@ -4,8 +4,8 @@ using Volo.Abp.Modularity;
 namespace JS.Abp.RulesEngine.Blazor.Server;
 
 [DependsOn(
-    typeof(AbpAspNetCoreComponentsServerThemingModule),
-    typeof(RulesEngineBlazorModule)
+    typeof(RulesEngineBlazorModule),
+    typeof(AbpAspNetCoreComponentsServerThemingModule)
     )]
 public class RulesEngineBlazorServerModule : AbpModule
 {

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp;
 using Volo.Abp.Modularity;
@@ -15,6 +16,14 @@ public abstract class RulesEngineTestBase<TStartupModule> : AbpIntegratedTest<TS
     protected override void SetAbpApplicationCreationOptions(AbpApplicationCreationOptions options)
     {
         options.UseAutofac();
+    }
+
+    protected override void BeforeAddApplication(IServiceCollection services)
+    {
+        var builder = new ConfigurationBuilder();
+        builder.AddJsonFile("appsettings.json", false);
+        builder.AddJsonFile("appsettings.secrets.json", true);
+        services.ReplaceConfiguration(builder.Build());
     }
 
     protected virtual Task WithUnitOfWorkAsync(Func<Task> func)

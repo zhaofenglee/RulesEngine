@@ -3,11 +3,13 @@ using System.Linq;
 using Shouldly;
 using System.Threading.Tasks;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
 using Xunit;
 
 namespace JS.Abp.RulesEngine.RulesMembers
 {
-    public class RulesMembersAppServiceTests : RulesEngineApplicationTestBase
+    public abstract class RulesMembersAppServiceTests <TStartupModule> : RulesEngineApplicationTestBase<TStartupModule>
+        where TStartupModule : IAbpModule
     {
         private readonly IRulesMembersAppService _rulesMembersAppService;
         private readonly IRepository<RulesMember, Guid> _rulesMemberRepository;

@@ -14,7 +14,7 @@ using MongoDB.Driver;
 
 namespace JS.Abp.RulesEngine.Rules
 {
-    public abstract class MongoRuleRepository : MongoDbRepository<RulesEngineMongoDbContext, Rule, Guid>, IRuleRepository
+    public  class MongoRuleRepository : MongoDbRepository<RulesEngineMongoDbContext, Rule, Guid>, IRuleRepository
     {
         public MongoRuleRepository(IMongoDbContextProvider<RulesEngineMongoDbContext> dbContextProvider)
             : base(dbContextProvider)
