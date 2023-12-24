@@ -9,11 +9,13 @@ using JS.Abp.RulesEngine.RulesMembers;
 using Shouldly;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
 using Xunit;
 
 namespace JS.Abp.RulesEngine.Stores;
 
-public class RulesEngineStoreTests : RulesEngineDomainTestBase
+public abstract class RulesEngineStoreTests<TStartupModule> : RulesEngineDomainTestBase<TStartupModule>
+    where TStartupModule : IAbpModule
 {
     private readonly IRepository<Rule, Guid> _ruleRepository;
     private readonly IRepository<RulesGroup, Guid> _rulesGroupRepository;

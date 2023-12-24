@@ -8,11 +8,13 @@ using JS.Abp.RulesEngine.RulesMembers;
 using JS.Abp.RulesEngine.Stores;
 using Volo.Abp.Data;
 using Volo.Abp.Domain.Repositories;
+using Volo.Abp.Modularity;
 using Xunit;
 
 namespace JS.Abp.RulesEngine.RulesGroups
 {
-    public class RulesGroupsAppServiceTests : RulesEngineApplicationTestBase
+    public abstract class RulesGroupsAppServiceTests <TStartupModule> : RulesEngineApplicationTestBase<TStartupModule>
+        where TStartupModule : IAbpModule
     {
         private readonly IRulesGroupsAppService _rulesGroupsAppService;
         private readonly IRepository<RulesGroup, Guid> _rulesGroupRepository;

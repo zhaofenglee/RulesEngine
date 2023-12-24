@@ -13,7 +13,7 @@ using MongoDB.Driver;
 
 namespace JS.Abp.RulesEngine.RulesGroups
 {
-    public abstract class MongoRulesGroupRepository : MongoDbRepository<RulesEngineMongoDbContext, RulesGroup, Guid>, IRulesGroupRepository
+    public class MongoRulesGroupRepository : MongoDbRepository<RulesEngineMongoDbContext, RulesGroup, Guid>, IRulesGroupRepository
     {
         public MongoRulesGroupRepository(IMongoDbContextProvider<RulesEngineMongoDbContext> dbContextProvider)
             : base(dbContextProvider)

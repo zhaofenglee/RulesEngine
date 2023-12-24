@@ -10,10 +10,10 @@ using Volo.Abp.Uow;
 namespace JS.Abp.RulesEngine.EntityFrameworkCore;
 
 [DependsOn(
-    typeof(RulesEngineTestBaseModule),
+    typeof(RulesEngineApplicationTestModule),
     typeof(RulesEngineEntityFrameworkCoreModule),
     typeof(AbpEntityFrameworkCoreSqliteModule)
-    )]
+)]
 public class RulesEngineEntityFrameworkCoreTestModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)

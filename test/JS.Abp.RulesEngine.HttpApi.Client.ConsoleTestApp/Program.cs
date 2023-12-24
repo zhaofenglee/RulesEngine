@@ -1,22 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Hosting;
+using Volo.Abp;
+using Volo.Abp.Threading;
 
-namespace JS.Abp.RulesEngine.HttpApi.Client.ConsoleTestApp;
+namespace JS.Abp.RulesEngine;
 
 class Program
 {
-    static async Task Main(string[] args)
+    async static Task Main(string[] args)
     {
-        await CreateHostBuilder(args).RunConsoleAsync();
-    }
+        using (var application = await AbpApplicationFactory.CreateAsync<RulesEngineConsoleApiClientModule>(options =>
+        {
+            var builder = new ConfigurationBuilder();
+            builder.AddJsonFile("appsettings.json", false);
+            builder.AddJsonFile("appsettings.secrets.json", true);
+            options.Services.ReplaceConfiguration(builder.Build());
+            options.UseAutofac();
+        }))
+        {
+            await application.InitializeAsync();
 
-    public static IHostBuilder CreateHostBuilder(string[] args) =>
-        Host.CreateDefaultBuilder(args)
-            .AddAppSettingsSecretsJson()
-            .ConfigureServices((hostContext, services) =>
-            {
-                services.AddHostedService<ConsoleTestAppHostedService>();
-            });
+            var demo = application.ServiceProvider.GetRequiredService<ClientDemoService>();
+            await demo.RunAsync();
+
+            Console.WriteLine("Press ENTER to stop application...");
+            Console.ReadLine();
+
+            await application.ShutdownAsync();
+        }
+    }
 }
