@@ -3,17 +3,20 @@
   <Import Project="..\..\common.props" />
 
   <PropertyGroup>
-    <TargetFramework>net7.0</TargetFramework>
+    <TargetFramework>net8.0</TargetFramework>
     <Nullable>enable</Nullable>
     <RootNamespace>JS.Abp.RulesEngine</RootNamespace>
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.2.0" />
-    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="7.0.10" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
+    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="$(VoloAbpPackageVersion)" />
+  </ItemGroup>
+
+  <ItemGroup>
     <ProjectReference Include="..\..\src\JS.Abp.RulesEngine.EntityFrameworkCore\JS.Abp.RulesEngine.EntityFrameworkCore.csproj" />
-    <ProjectReference Include="..\JS.Abp.RulesEngine.TestBase\JS.Abp.RulesEngine.TestBase.csproj" />
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="7.4.0" />
+    <ProjectReference Include="..\JS.Abp.RulesEngine.Application.Tests\JS.Abp.RulesEngine.Application.Tests.csproj" />
   </ItemGroup>
 
 </Project>
