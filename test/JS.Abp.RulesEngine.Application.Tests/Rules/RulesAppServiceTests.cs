@@ -29,8 +29,8 @@ namespace JS.Abp.RulesEngine.Rules
             var result = await _rulesAppService.GetListAsync(new GetRulesInput());
 
             // Assert
-            result.TotalCount.ShouldBe(2);
-            result.Items.Count.ShouldBe(2);
+            result.TotalCount.ShouldBe(10);
+            result.Items.Count.ShouldBe(10);
             result.Items.Any(x => x.Id == Guid.Parse("60342e5a-dc76-47a3-9cb1-8a1eb19341cb")).ShouldBe(true);
             result.Items.Any(x => x.Id == Guid.Parse("4e3b6ec6-1ed3-4e5c-a057-d863159f7cb2")).ShouldBe(true);
         }
@@ -127,8 +127,8 @@ namespace JS.Abp.RulesEngine.Rules
             var result = await _rulesAppService.GetListAsync(new GetRulesInput());
 
             // Assert
-            result.TotalCount.ShouldBe(2);
-            result.Items.Count.ShouldBe(2);
+            result.TotalCount.ShouldBe(10);
+            result.Items.Count.ShouldBe(10);
             result.Items.Any(x => x.Id == Guid.Parse("60342e5a-dc76-47a3-9cb1-8a1eb19341cb")).ShouldBe(true);
             result.Items.Any(x => x.Id == Guid.Parse("4e3b6ec6-1ed3-4e5c-a057-d863159f7cb2")).ShouldBe(true);
             
