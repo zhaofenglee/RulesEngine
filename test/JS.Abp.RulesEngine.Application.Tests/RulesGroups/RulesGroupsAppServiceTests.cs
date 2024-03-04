@@ -1,4 +1,5 @@
 using System;
+using System.Collections.Generic;
 using System.Linq;
 using Shouldly;
 using System.Threading.Tasks;
@@ -35,8 +36,8 @@ namespace JS.Abp.RulesEngine.RulesGroups
             var result = await _rulesGroupsAppService.GetListAsync(new GetRulesGroupsInput());
 
             // Assert
-            result.TotalCount.ShouldBe(2);
-            result.Items.Count.ShouldBe(2);
+            result.TotalCount.ShouldBe(3);
+            result.Items.Count.ShouldBe(3);
             result.Items.Any(x => x.Id == Guid.Parse("15d16d9c-bb47-40e7-ad2d-60075e6c8b11")).ShouldBe(true);
             result.Items.Any(x => x.Id == Guid.Parse("8e6af1ef-07c5-493f-b727-d5b2ac81c10c")).ShouldBe(true);
         }
@@ -246,6 +247,52 @@ namespace JS.Abp.RulesEngine.RulesGroups
             },
         });
         result5.IsSuccess.ShouldBeFalse();
+        }
+        
+        
+        [Fact]
+        public async Task VerifyTestPriceRuleAsync()
+        {
+            // Arrange
+            List<BookDto> BookList = new List<BookDto>()
+            {
+                new BookDto()
+                {
+                    Name = "Test1",
+                    Price = 10
+                },
+            };
+            // Assert
+            //这里可以使用规则引擎判断是否拥有折扣
+            var result = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
+            {
+                GroupName = "TestPrice",
+                ExtraProperties = new ExtraPropertyDictionary()
+                {
+                    {"Price", BookList.Sum(c=>c.Price)}
+                },
+            });
+            //如果有折扣则返回True
+            result.IsSuccess.ShouldBeFalse();
+           
+            BookList.Add(new BookDto()
+            {
+                Name = "Test2",
+                Price = 40
+            });
+            
+            var result2 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
+            {
+                GroupName = "TestPrice",
+                ExtraProperties = new ExtraPropertyDictionary()
+                {
+                    {"Price", BookList.Sum(c=>c.Price)}
+                },
+            });
+            //如果有折扣则返回True
+            result2.IsSuccess.ShouldBeTrue();
+            result2.SuccessEvent.ShouldBe("-5");
+            
         }
     }
 }

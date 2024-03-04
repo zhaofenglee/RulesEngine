@@ -116,7 +116,7 @@ public class RulesEngineStore:IRulesEngineStore,ITransientDependency
             if (rulesMembers.Any())
             {
                 var result = new RuleResult();
-                foreach (var rulesMember in rulesMembers)
+                foreach (var rulesMember in rulesMembers.OrderBy(c=>c.Sequence))
                 {
                     var ruleResult = await ExecuteRulesAsync(rulesMember.RuleId!.Value, input);
                     //如果是And运算符，需要全部满足，OR运算符只要有一个满足则返回
