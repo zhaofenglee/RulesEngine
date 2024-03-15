@@ -27,8 +27,8 @@ namespace JS.Abp.RulesEngine.RulesMembers
             var result = await _rulesMembersAppService.GetListAsync(new GetRulesMembersInput());
 
             // Assert
-            result.TotalCount.ShouldBe(2);
-            result.Items.Count.ShouldBe(2);
+            result.TotalCount.ShouldBe(10);
+            result.Items.Count.ShouldBe(10);
             result.Items.Any(x => x.RulesMember.Id == Guid.Parse("f8402a52-f7d4-4f69-87ae-bb5df23f2348")).ShouldBe(true);
             result.Items.Any(x => x.RulesMember.Id == Guid.Parse("b42abf30-a721-493c-bcc5-3bf8c9316716")).ShouldBe(true);
         }
