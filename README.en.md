@@ -1,4 +1,4 @@
-# 规则引擎
+# Rules Engine
 
 ---
 
@@ -8,14 +8,14 @@
 
 ---
 
-## 实现原理
-根据特定的规则模型，根据判断表达式判断传入数据集是否符合
-* 如果传入规则不存在，默认会判断通过(返回True)
-* 表达式默认是以x.开头，x.后面的是传入的数据集的属性名
+## Implementation Principle
+Based on a specific rule model, it judges whether the incoming data set conforms according to the judgment expression.
+* If the incoming rule does not exist, it will be judged as passed by default (return True).
+* The expression defaults to start with x., and the following x. is the attribute name of the incoming data set.
 
-## 准备工作
+## Preparation
 
-### 1.安装 NuGet packages.
+### 1. Install NuGet packages.
 * JS.Abp.RulesEngine.Application
 * JS.Abp.RulesEngine.Application.Contracts
 * JS.Abp.RulesEngine.Domain
@@ -29,7 +29,7 @@
 *(Optional)  JS.Abp.RulesEngine.Blazor.WebAssembly
 *(Optional)  JS.Abp.RulesEngine.Web
 
-### 2.添加“依赖”属性以配置模块
+### 2. Add "DependsOn" attribute to configure the module
 * [DependsOn(typeof(RulesEngineApplicationModule))]
 * [DependsOn(typeof(RulesEngineApplicationContractsModule))]
 * [DependsOn(typeof(RulesEngineDomainModule))]
@@ -38,34 +38,33 @@
 * [DependsOn(typeof(RulesEngineHttpApiModule))]
 * [DependsOn(typeof(RulesEngineHttpApiClientModule))]
 
-
 *(Optional)  [DependsOn(typeof(RulesEngineBlazorModule))]
 *(Optional)  [DependsOn(typeof(RulesEngineBlazorServerModule))]
 *(Optional)  [DependsOn(typeof(RulesEngineBlazorWebAssemblyModule))]
 *(Optional)  [DependsOn(typeof(RulesEngineWebModule))]
 
-### *若使用MongoDb，以下步骤可以忽略
-### 3. 在你的Dbcontext添加 ` builder.ConfigureRulesEngine();`
+### If using MongoDb, the following steps can be ignored
+### 3. Add `builder.ConfigureRulesEngine();` to your DbContext
 
-### 4. 添加 EF Core 迁移并更新数据库
-在 YourProject.EntityFrameworkCore 项目的目录中打开命令行终端，然后键入以下命令：
+### 4. Add EF Core migrations and update the database
+Open the command line terminal in the directory of YourProject.EntityFrameworkCore project, then type the following commands:
 
-````bash
+```bash
 > dotnet ef migrations add Added_RulesEngine
-````
-````bash
+```
+```bash
 > dotnet ef database update
-````
+```
 
-## 如何使用
-### 1.维护规则
-MVC和Blazor已经实现了维护规则的页面，如果你的项目中没有使用这两个框架，你可以自己实现维护规则的页面
+## How to use
+### 1. Maintain rules
+MVC and Blazor have already implemented the pages for maintaining rules. If these two frameworks are not used in your project, you can implement the pages for maintaining rules yourself.
 
-### 2.在你的项目中使用
-#### 2.1使用Store(参考测试项目RulesEngineStoreTests)
-````csharp
+### 2. Use in your project
+#### 2.1 Use Store (refer to the test project RulesEngineStoreTests)
+```csharp
         protected IRulesEngineStore rulesEngine => LazyServiceProvider.LazyGetRequiredService<IRulesEngineStore>();
-        //如下是维护的规则，正式代码下可不用
+        // The following are the maintained rules, which can be ignored in the formal code
         var input = new Rule
         {
             RuleName = "Test1",
@@ -75,35 +74,35 @@ MVC和Blazor已经实现了维护规则的页面，如果你的项目中没有�
             RuleExpressionType = default,
             Expression = "x.Name == \"Test\" && x.Age >= 20"
         };
-        //TestRule1不存在，会默认返回True
+        // If TestRule1 does not exist, it will return True by default
         var result1 = await _rulesEngineStore.ExecuteRulesAsync("TestRule1", new TestDto(){Name = "Test",Age = 20});
-        //Test1判断通过返回True
+        // Test1 passes the judgment and returns True
         var result2 = await _rulesEngineStore.ExecuteRulesAsync("Test1", new TestDto(){Name = "Test",Age = 20});
         result2.IsSuccess.ShouldBeTrue();
-        //Test1判断不通过False
+        // Test1 fails the judgment and returns False
         var result3 = await _rulesEngineStore.ExecuteRulesAsync("Test1", new TestDto(){Name = "TestRule",Age = 20});
         result3.IsSuccess.ShouldBeFalse();
-````
-#### 2.2使用API(参考测试项目RuleApplicationTests,RulesGroupApplicationTests)
+```
+#### 2.2 Use API (refer to the test projects RuleApplicationTests, RulesGroupApplicationTests)
 ```csharp
-//使用规则引擎组
+// Use rules engine group
 private readonly IRulesGroupsAppService _rulesGroupsAppService;
 
  var result1 = await _rulesAppService.VerifyRuleAsync(new VerifyRuleDto()
             {
                 RuleCode = "TestRule1",
-                ExtraProperties = new ExtraPropertyDictionary()//支持以Dictionary<string,object>传入
+                ExtraProperties = new ExtraPropertyDictionary()// Supports passing in as Dictionary<string,object>
                 {
                     {"Name", "Test"},
                     {"Age", 20}
                 },
             });
-//使用规则引擎
+// Use rules engine
 private readonly IRulesAppService _rulesAppService;
 var result1 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
         {
             GroupName = "TestRule1",
-            ExtraProperties = new ExtraPropertyDictionary()//支持以Dictionary<string,object>传入
+            ExtraProperties = new ExtraPropertyDictionary()// Supports passing in as Dictionary<string,object>
             {
                 {"Name", "Test"},
                 {"Age", 20}
@@ -112,23 +111,23 @@ var result1 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleG
 ```
 
 ## Sample
-以电商为例，假设有如下规则
-* 1.价格大于1000元满减500元
-* 2.价格大于500元满减300元
-* 3.价格大于200元满减100元
-* 4.价格大于100元满减20元
-### 1.维护规则
+Take e-commerce as an example, suppose there are the following rules
+* 1. Price over 1000 yuan, get 500 yuan off
+* 2. Price over 500 yuan, get 300 yuan off
+* 3. Price over 200 yuan, get 100 yuan off
+* 4. Price over 100 yuan, get 20 yuan off
+### 1. Maintain rules
 ![2023092301](/docs/images/2023092301.png)
-### 2.维护规则组
-#### 2.1建一个规则组”TestPrice“
-#### 2.2把规则1-4添加到规则组”TestPrice“
+### 2. Maintain rule groups
+#### 2.1 Create a rule group "TestPrice"
+#### 2.2 Add rules 1-4 to the rule group "TestPrice"
 ![2023092302](/docs/images/2023092302.png)
-### 3.使用规则引擎
-* 1.可以现在前端判断一次，把结果返回前端
-* 2.后端再判断一次，判断前端传入和后端计算结果是否一致
-参考代码:JS.Abp.RulesEngine.Blazor.Server.Host/Pages/Books.razor
-````csharp
-//判断是否有折扣
+### 3. Use the rules engine
+* 1. You can judge once on the front end and return the result to the front end
+* 2. The backend judges again to check whether the result passed in by the front end is consistent with the result calculated by the backend
+     Refer to the code: JS.Abp.RulesEngine.Blazor.Server.Host/Pages/Books.razor
+```csharp
+// Judge whether there is a discount
  var result = await RulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleGroupDto()
         {
             GroupName = "TestPrice",
@@ -144,7 +143,5 @@ var result1 = await _rulesGroupsAppService.VerifyRulesGroupAsync(new VerifyRuleG
                 Discount = result.SuccessEvent;
             }
         }
-
-
-````
+```
 ![2023092303](/docs/images/2023092303.png)
