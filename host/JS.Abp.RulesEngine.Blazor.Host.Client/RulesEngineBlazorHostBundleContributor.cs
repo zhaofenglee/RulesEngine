@@ -1,6 +1,6 @@
 ﻿using Volo.Abp.Bundling;
 
-namespace JS.Abp.RulesEngine.Blazor.Host;
+namespace JS.Abp.RulesEngine.Blazor.Host.Client;
 
 public class RulesEngineBlazorHostBundleContributor : IBundleContributor
 {

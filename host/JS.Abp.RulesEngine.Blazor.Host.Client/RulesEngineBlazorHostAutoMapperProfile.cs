@@ -1,6 +1,6 @@
 ﻿using AutoMapper;
 
-namespace JS.Abp.RulesEngine.Blazor.Host;
+namespace JS.Abp.RulesEngine.Blazor.Host.Client;
 
 public class RulesEngineBlazorHostAutoMapperProfile : Profile
 {

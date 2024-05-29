@@ -1,10 +1,11 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Microsoft.Extensions.Configuration;
+using Volo.Abp.Account.Localization;
 using Volo.Abp.Authorization.Permissions;
 using Volo.Abp.UI.Navigation;
-using Volo.Abp.Account.Localization;
-namespace JS.Abp.RulesEngine.Blazor.Host;
+
+namespace JS.Abp.RulesEngine.Blazor.Host.Client;
 
 public class RulesEngineHostMenuContributor : IMenuContributor
 {
@@ -35,7 +36,8 @@ public class RulesEngineHostMenuContributor : IMenuContributor
             $"{openIddictUrl.EnsureEndsWith('/')}Account/Manage?returnUrl={_configuration["App:SelfUrl"]}",
             icon: "fa fa-cog",
             order: 1000,
-            null).RequireAuthenticated());
+            null,
+            "_blank").RequireAuthenticated());
 
         return Task.CompletedTask;
     }

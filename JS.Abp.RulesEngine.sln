@@ -59,6 +59,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS.Abp.RulesEngine.Blazor.W
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS.Abp.RulesEngine.Blazor.Server.Host", "host\JS.Abp.RulesEngine.Blazor.Server.Host\JS.Abp.RulesEngine.Blazor.Server.Host.csproj", "{FEA752A1-5B4E-49E9-B1F3-DDC25E41BB52}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "JS.Abp.RulesEngine.Blazor.Host.Client", "host\JS.Abp.RulesEngine.Blazor.Host.Client\JS.Abp.RulesEngine.Blazor.Host.Client.csproj", "{9454B6AD-B35B-4C00-BE99-71F9B354848A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -165,6 +167,10 @@ Global
 		{FEA752A1-5B4E-49E9-B1F3-DDC25E41BB52}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{FEA752A1-5B4E-49E9-B1F3-DDC25E41BB52}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{FEA752A1-5B4E-49E9-B1F3-DDC25E41BB52}.Release|Any CPU.Build.0 = Release|Any CPU
+		{9454B6AD-B35B-4C00-BE99-71F9B354848A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{9454B6AD-B35B-4C00-BE99-71F9B354848A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{9454B6AD-B35B-4C00-BE99-71F9B354848A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{9454B6AD-B35B-4C00-BE99-71F9B354848A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -195,6 +201,7 @@ Global
 		{299BE52E-823F-408E-9C6D-7E2F81BA34FF} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 		{F0EE5760-262D-456A-AA7C-E84F484A05F6} = {649A3FFA-182F-4E56-9717-E6A9A2BEC545}
 		{FEA752A1-5B4E-49E9-B1F3-DDC25E41BB52} = {E400416D-2895-4512-9D17-90681EEC7E0A}
+		{9454B6AD-B35B-4C00-BE99-71F9B354848A} = {E400416D-2895-4512-9D17-90681EEC7E0A}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {BB9B78FB-4F30-1794-15F4-D615ADA46FCA}

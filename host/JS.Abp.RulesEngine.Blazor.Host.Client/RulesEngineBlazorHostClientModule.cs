@@ -2,12 +2,12 @@
 using System.Net.Http;
 using Blazorise.Bootstrap5;
 using Blazorise.Icons.FontAwesome;
+using Microsoft.AspNetCore.Components.Web;
 using Microsoft.AspNetCore.Components.WebAssembly.Hosting;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Volo.Abp.Account;
 using JS.Abp.RulesEngine.Blazor.WebAssembly;
-using Volo.Abp.AspNetCore.Components.Web.BasicTheme.Themes.Basic;
+using Volo.Abp.Account;
 using Volo.Abp.AspNetCore.Components.Web.Theming.Routing;
 using Volo.Abp.AspNetCore.Components.WebAssembly.BasicTheme;
 using Volo.Abp.Autofac.WebAssembly;
@@ -18,7 +18,7 @@ using Volo.Abp.SettingManagement.Blazor.WebAssembly;
 using Volo.Abp.TenantManagement.Blazor.WebAssembly;
 using Volo.Abp.UI.Navigation;
 
-namespace JS.Abp.RulesEngine.Blazor.Host;
+namespace JS.Abp.RulesEngine.Blazor.Host.Client;
 
 [DependsOn(
     typeof(AbpAutofacWebAssemblyModule),
@@ -29,7 +29,7 @@ namespace JS.Abp.RulesEngine.Blazor.Host;
     typeof(AbpSettingManagementBlazorWebAssemblyModule),
     typeof(RulesEngineBlazorWebAssemblyModule)
 )]
-public class RulesEngineBlazorHostModule : AbpModule
+public class RulesEngineBlazorHostClientModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
@@ -40,7 +40,6 @@ public class RulesEngineBlazorHostModule : AbpModule
         ConfigureHttpClient(context, environment);
         ConfigureBlazorise(context);
         ConfigureRouter(context);
-        ConfigureUI(builder);
         ConfigureMenu(context);
         ConfigureAutoMapper(context);
     }
@@ -49,7 +48,7 @@ public class RulesEngineBlazorHostModule : AbpModule
     {
         Configure<AbpRouterOptions>(options =>
         {
-            options.AppAssembly = typeof(RulesEngineBlazorHostModule).Assembly;
+            options.AppAssembly = typeof(RulesEngineBlazorHostClientModule).Assembly;
         });
     }
 
@@ -77,11 +76,6 @@ public class RulesEngineBlazorHostModule : AbpModule
         });
     }
 
-    private static void ConfigureUI(WebAssemblyHostBuilder builder)
-    {
-        builder.RootComponents.Add<App>("#ApplicationContainer");
-    }
-
     private static void ConfigureHttpClient(ServiceConfigurationContext context, IWebAssemblyHostEnvironment environment)
     {
         context.Services.AddTransient(sp => new HttpClient
@@ -94,7 +88,7 @@ public class RulesEngineBlazorHostModule : AbpModule
     {
         Configure<AbpAutoMapperOptions>(options =>
         {
-            options.AddMaps<RulesEngineBlazorHostModule>();
+            options.AddMaps<RulesEngineBlazorHostClientModule>();
         });
     }
 }
