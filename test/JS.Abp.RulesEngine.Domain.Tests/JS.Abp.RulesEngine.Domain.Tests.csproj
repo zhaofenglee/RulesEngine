@@ -17,4 +17,5 @@
     <ProjectReference Include="..\JS.Abp.RulesEngine.TestBase\JS.Abp.RulesEngine.TestBase.csproj" />
   </ItemGroup>
 
+
 </Project>

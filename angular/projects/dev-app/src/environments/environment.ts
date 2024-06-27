@@ -10,7 +10,7 @@ export const environment = {
     logoUrl: '',
   },
   oAuthConfig: {
-    issuer: 'https://localhost:44308/',
+    issuer: 'https://localhost:44385/',
     redirectUri: baseUrl,
     clientId: 'RulesEngine_App',
     responseType: 'code',
@@ -19,11 +19,11 @@ export const environment = {
   },
   apis: {
     default: {
-      url: 'https://localhost:44308',
+      url: 'https://localhost:44385',
       rootNamespace: 'JS.Abp.RulesEngine',
     },
     RulesEngine: {
-      url: 'https://localhost:44318',
+      url: 'https://localhost:44388',
       rootNamespace: 'JS.Abp.RulesEngine',
     },
   },

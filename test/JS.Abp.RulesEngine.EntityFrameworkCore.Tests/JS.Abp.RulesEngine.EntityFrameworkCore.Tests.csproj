@@ -10,13 +10,11 @@
 
   <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
-    <PackageReference Include="Microsoft.Data.Sqlite" Version="8.0.0" />
-    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="$(VoloAbpPackageVersion)" />
-  </ItemGroup>
-
-  <ItemGroup>
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Proxies" Version="8.0.4" />
     <ProjectReference Include="..\..\src\JS.Abp.RulesEngine.EntityFrameworkCore\JS.Abp.RulesEngine.EntityFrameworkCore.csproj" />
     <ProjectReference Include="..\JS.Abp.RulesEngine.Application.Tests\JS.Abp.RulesEngine.Application.Tests.csproj" />
+    <PackageReference Include="Volo.Abp.EntityFrameworkCore.Sqlite" Version="$(VoloAbpPackageVersion)" />
+
   </ItemGroup>
 
 </Project>

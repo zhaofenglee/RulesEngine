@@ -8,21 +8,30 @@
     <base href="/" />
 
     <!--ABP:Styles-->
-    <link href="global.css?_v=638289244983804402" rel="stylesheet"/>
+    <link href="global.css?_v=638523129710883313" rel="stylesheet"/>
     <link href="main.css" rel="stylesheet"/>
     <!--/ABP:Styles-->
+    <link href="JS.Abp.RulesEngine.Blazor.Host.Client.styles.css" rel="stylesheet"/>
+
+    <HeadOutlet @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)" />
 </head>
 
 <body class="abp-application-layout bg-light">
+
+    <script src="_framework/blazor.web.js"></script>
+
     <div id="ApplicationContainer">
         <div class="spinner">
             <div class="double-bounce1"></div>
             <div class="double-bounce2"></div>
         </div>
+
+        <Routes @rendermode="new InteractiveWebAssemblyRenderMode(prerender: false)"/>
     </div>
 
     <!--ABP:Scripts-->
-    <script src="global.js?_v=638289244984662394"></script>
+    <script src="global.js?_v=638523129711353314"></script>
     <!--/ABP:Scripts-->
+
 </body>
 </html>
