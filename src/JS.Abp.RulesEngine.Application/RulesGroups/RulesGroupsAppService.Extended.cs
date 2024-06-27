@@ -27,7 +27,7 @@ namespace JS.Abp.RulesEngine.RulesGroups
             : base(rulesGroupRepository, rulesGroupManager, excelDownloadTokenCache)
         {
         }
-
+        
         public virtual async Task<RuleResult> VerifyRulesGroupAsync(VerifyRuleGroupDto input)
         {
             Dictionary<string, string?> extraProperties = new Dictionary<string, string?>();
