@@ -11,9 +11,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\src\JS.Abp.RulesEngine.Application\JS.Abp.RulesEngine.Application.csproj" />
     <ProjectReference Include="..\JS.Abp.RulesEngine.Domain.Tests\JS.Abp.RulesEngine.Domain.Tests.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.8.0" />
   </ItemGroup>
 
