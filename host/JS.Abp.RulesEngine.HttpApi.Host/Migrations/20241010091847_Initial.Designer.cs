@@ -12,7 +12,7 @@ using Volo.Abp.EntityFrameworkCore;
 namespace JS.Abp.RulesEngine.Migrations
 {
     [DbContext(typeof(RulesEngineHttpApiHostMigrationsDbContext))]
-    [Migration("20240312033807_Initial")]
+    [Migration("20241010091847_Initial")]
     partial class Initial
     {
         /// <inheritdoc />
@@ -21,7 +21,7 @@ namespace JS.Abp.RulesEngine.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("_Abp_DatabaseProvider", EfCoreDatabaseProvider.SqlServer)
-                .HasAnnotation("ProductVersion", "8.0.0")
+                .HasAnnotation("ProductVersion", "9.0.0-rc.1.24451.1")
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);

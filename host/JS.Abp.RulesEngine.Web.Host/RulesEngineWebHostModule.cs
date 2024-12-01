@@ -231,7 +231,7 @@ public class RulesEngineWebHostModule : AbpModule
         }
 
         app.UseHttpsRedirection();
-        app.UseStaticFiles();
+        app.MapAbpStaticAssets();
         app.UseRouting();
         app.UseAuthentication();
 
