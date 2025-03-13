@@ -95,10 +95,10 @@ $(function () {
                 defaultContent : ""
             },
 			{ data: "rulesMember.description" }
-            // {
-            //     data: "rulesGroup.groupName",
-            //     defaultContent : ""
-            // },
+           /* {
+                data: "rulesGroup.groupName",
+                defaultContent : ""
+            }*/
             
         ]
     }));
