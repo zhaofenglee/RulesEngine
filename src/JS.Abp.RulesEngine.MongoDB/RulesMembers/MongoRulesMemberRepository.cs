@@ -50,10 +50,9 @@ namespace JS.Abp.RulesEngine.RulesMembers
             int skipCount = 0,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description, rulesGroupId, ruleId);
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description, rulesGroupId, ruleId);
             var rulesMembers = await query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? RulesMemberConsts.GetDefaultSorting(false) : sorting.Split('.').Last())
-                .As<IMongoQueryable<RulesMember>>()
-                .PageBy<RulesMember, IMongoQueryable<RulesMember>>(skipCount, maxResultCount)
+                .PageBy(skipCount, maxResultCount)
                 .ToListAsync(GetCancellationToken(cancellationToken));
 
             var dbContext = await GetDbContextAsync(cancellationToken);
@@ -76,10 +75,10 @@ namespace JS.Abp.RulesEngine.RulesMembers
             int skipCount = 0,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description);
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? RulesMemberConsts.GetDefaultSorting(false) : sorting);
-            return await query.As<IMongoQueryable<RulesMember>>()
-                .PageBy<RulesMember, IMongoQueryable<RulesMember>>(skipCount, maxResultCount)
+            return await query
+                .PageBy(skipCount, maxResultCount)
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
@@ -92,8 +91,8 @@ namespace JS.Abp.RulesEngine.RulesMembers
             Guid? ruleId = null,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description, rulesGroupId, ruleId);
-            return await query.As<IMongoQueryable<RulesMember>>().LongCountAsync(GetCancellationToken(cancellationToken));
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, sequenceMin, sequenceMax, description, rulesGroupId, ruleId);
+            return await query.LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
         protected virtual IQueryable<RulesMember> ApplyFilter(
