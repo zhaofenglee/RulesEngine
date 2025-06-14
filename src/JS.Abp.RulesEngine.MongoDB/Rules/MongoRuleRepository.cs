@@ -35,10 +35,10 @@ namespace JS.Abp.RulesEngine.Rules
             int skipCount = 0,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, ruleCode, successEvent, errorMessage, errorType, ruleExpressionType, expression, description);
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, ruleCode, successEvent, errorMessage, errorType, ruleExpressionType, expression, description);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? RuleConsts.GetDefaultSorting(false) : sorting);
-            return await query.As<IMongoQueryable<Rule>>()
-                .PageBy<Rule, IMongoQueryable<Rule>>(skipCount, maxResultCount)
+            return await query
+                .PageBy(skipCount, maxResultCount)
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
@@ -53,8 +53,8 @@ namespace JS.Abp.RulesEngine.Rules
             string? description = null,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, ruleCode, successEvent, errorMessage, errorType, ruleExpressionType, expression, description);
-            return await query.As<IMongoQueryable<Rule>>().LongCountAsync(GetCancellationToken(cancellationToken));
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, ruleCode, successEvent, errorMessage, errorType, ruleExpressionType, expression, description);
+            return await query.LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
         protected virtual IQueryable<Rule> ApplyFilter(

@@ -30,10 +30,10 @@ namespace JS.Abp.RulesEngine.RulesGroups
             int skipCount = 0,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, groupName, operatorType, description);
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, groupName, operatorType, description);
             query = query.OrderBy(string.IsNullOrWhiteSpace(sorting) ? RulesGroupConsts.GetDefaultSorting(false) : sorting);
-            return await query.As<IMongoQueryable<RulesGroup>>()
-                .PageBy<RulesGroup, IMongoQueryable<RulesGroup>>(skipCount, maxResultCount)
+            return await query
+                .PageBy(skipCount, maxResultCount)
                 .ToListAsync(GetCancellationToken(cancellationToken));
         }
 
@@ -44,8 +44,8 @@ namespace JS.Abp.RulesEngine.RulesGroups
             string? description = null,
             CancellationToken cancellationToken = default)
         {
-            var query = ApplyFilter((await GetMongoQueryableAsync(cancellationToken)), filterText, groupName, operatorType, description);
-            return await query.As<IMongoQueryable<RulesGroup>>().LongCountAsync(GetCancellationToken(cancellationToken));
+            var query = ApplyFilter((await GetQueryableAsync(cancellationToken)), filterText, groupName, operatorType, description);
+            return await query.LongCountAsync(GetCancellationToken(cancellationToken));
         }
 
         protected virtual IQueryable<RulesGroup> ApplyFilter(
