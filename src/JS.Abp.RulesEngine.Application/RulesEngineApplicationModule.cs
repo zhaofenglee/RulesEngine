@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 using Volo.Abp.Application;
-using Volo.Abp.AutoMapper;
+using Volo.Abp.Mapperly;
 using Volo.Abp.Modularity;
 
 namespace JS.Abp.RulesEngine;
@@ -9,16 +9,12 @@ namespace JS.Abp.RulesEngine;
     typeof(RulesEngineDomainModule),
     typeof(RulesEngineApplicationContractsModule),
     typeof(AbpDddApplicationModule),
-    typeof(AbpAutoMapperModule)
+    typeof(AbpMapperlyModule)
     )]
 public class RulesEngineApplicationModule : AbpModule
 {
     public override void ConfigureServices(ServiceConfigurationContext context)
     {
-        context.Services.AddAutoMapperObjectMapper<RulesEngineApplicationModule>();
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<RulesEngineApplicationModule>(validate: true);
-        });
+        context.Services.AddMapperlyObjectMapper<RulesEngineApplicationModule>();
     }
 }
