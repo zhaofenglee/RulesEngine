@@ -4,7 +4,7 @@ using JS.Abp.RulesEngine.Localization;
 using JS.Abp.RulesEngine.Web.Menus;
 using Volo.Abp.AspNetCore.Mvc.Localization;
 using Volo.Abp.AspNetCore.Mvc.UI.Theme.Shared;
-using Volo.Abp.AutoMapper;
+using Volo.Abp.Mapperly;
 using Volo.Abp.Modularity;
 using Volo.Abp.UI.Navigation;
 using Volo.Abp.VirtualFileSystem;
@@ -15,7 +15,7 @@ namespace JS.Abp.RulesEngine.Web;
 [DependsOn(
     typeof(RulesEngineApplicationContractsModule),
     typeof(AbpAspNetCoreMvcUiThemeSharedModule),
-    typeof(AbpAutoMapperModule)
+    typeof(AbpMapperlyModule)
     )]
 public class RulesEngineWebModule : AbpModule
 {
@@ -44,11 +44,7 @@ public class RulesEngineWebModule : AbpModule
             options.FileSets.AddEmbedded<RulesEngineWebModule>();
         });
 
-        context.Services.AddAutoMapperObjectMapper<RulesEngineWebModule>();
-        Configure<AbpAutoMapperOptions>(options =>
-        {
-            options.AddMaps<RulesEngineWebModule>(validate: true);
-        });
+        context.Services.AddMapperlyObjectMapper<RulesEngineWebModule>();
 
         Configure<RazorPagesOptions>(options =>
         {
