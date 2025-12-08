@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, inject, OnInit } from '@angular/core';
 import { RulesEngineService } from '../services/rules-engine.service';
 
 @Component({
@@ -7,7 +7,7 @@ import { RulesEngineService } from '../services/rules-engine.service';
   styles: [],
 })
 export class RulesEngineComponent implements OnInit {
-  constructor(private service: RulesEngineService) {}
+  private service = inject(RulesEngineService);
 
   ngOnInit(): void {
     this.service.sample().subscribe(console.log);

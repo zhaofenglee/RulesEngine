@@ -12,8 +12,8 @@ namespace JS.Abp.RulesEngine.RulesMembers
     {
         public RulesMemberDto RulesMember { get; set; }
 
-        public RulesGroupDto RulesGroup { get; set; }
-        public RuleDto Rule { get; set; }
+        public RulesGroupDto? RulesGroup { get; set; }
+        public RuleDto? Rule { get; set; }
 
     }
 #pragma warning restore CS8618

@@ -10,8 +10,8 @@ namespace JS.Abp.RulesEngine.RulesMembers
     {
         public RulesMember RulesMember { get; set; }
 
-        public RulesGroup RulesGroup { get; set; }
-        public Rule Rule { get; set; }
+        public RulesGroup? RulesGroup { get; set; }
+        public Rule? Rule { get; set; }
         
 
         
