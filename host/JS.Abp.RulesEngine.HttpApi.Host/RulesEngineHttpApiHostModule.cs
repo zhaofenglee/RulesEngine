@@ -13,7 +13,7 @@ using Microsoft.Extensions.Hosting;
 using JS.Abp.RulesEngine.EntityFrameworkCore;
 using JS.Abp.RulesEngine.MultiTenancy;
 using StackExchange.Redis;
-using Microsoft.OpenApi.Models;
+using Microsoft.OpenApi;
 using Volo.Abp;
 using Volo.Abp.AspNetCore.Authentication.JwtBearer;
 using Volo.Abp.AspNetCore.Mvc.UI.MultiTenancy;
