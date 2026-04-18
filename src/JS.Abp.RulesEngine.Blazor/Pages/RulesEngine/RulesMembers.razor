@@ -108,11 +108,11 @@
                         <EntityActions TItem="RulesMemberWithNavigationPropertiesDto" EntityActionsColumn="@EntityActionsColumn">
                             <EntityAction TItem="RulesMemberWithNavigationPropertiesDto"
                                           Visible="@CanEditRulesMember"
-                                          Clicked="async () => await OpenEditRulesMemberModalAsync(context)"
+                                          Clicked="async () => await OpenEditRulesMemberModalAsync(context.Item)"
                                           Text="@L["Edit"]"></EntityAction>
                             <EntityAction TItem="RulesMemberWithNavigationPropertiesDto"
                                           Visible="@CanDeleteRulesMember"
-                                          Clicked="() => DeleteRulesMemberAsync(context)"
+                                          Clicked="() => DeleteRulesMemberAsync(context.Item)"
                                           ConfirmationMessage="@(() => L["DeleteConfirmationMessage"])"
                                           Text="@L["Delete"]"></EntityAction>
                             
@@ -149,8 +149,8 @@
 </Card>
 
 @* ************************* CREATE MODAL ************************* *@
-<Modal @ref="CreateRulesMemberModal" Closing="@CreateRulesMemberModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="CreateRulesMemberModal" Closing="@CreateRulesMemberModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="CreateRulesMemberForm">
             <ModalHeader>
@@ -177,7 +177,7 @@
                     
                     <Field>
                         <FieldLabel>@L["Rule"]</FieldLabel>
-                        <Select TValue="Guid?" @bind-SelectedValue="@NewRulesMember.RuleId">
+                        <Select TValue="Guid?" @bind-Value="@NewRulesMember.RuleId">
                             <SelectItem TValue="Guid?" Value="null"></SelectItem>
                             @foreach (var rule in RulesCollection)
                             {
@@ -193,11 +193,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@NewRulesMember.Description"  >
+                            <MemoInput @bind-Value="@NewRulesMember.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
@@ -237,8 +237,8 @@
 </Modal>
 
 @* ************************* EDIT MODAL ************************* *@
-<Modal @ref="EditRulesMemberModal" Closing="@EditRulesMemberModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="EditRulesMemberModal" Closing="@EditRulesMemberModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="EditRulesMemberForm">
             <ModalHeader>
@@ -265,7 +265,7 @@
 
                     <Field>
                         <FieldLabel>@L["Rule"]</FieldLabel>
-                        <Select TValue="Guid?" @bind-SelectedValue="@EditingRulesMember.RuleId">
+                        <Select TValue="Guid?" @bind-Value="@EditingRulesMember.RuleId">
                             <SelectItem TValue="Guid?" Value="null"></SelectItem>
                             @foreach (var rule in RulesCollection)
                             {
@@ -280,11 +280,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@EditingRulesMember.Description"  >
+                            <MemoInput @bind-Value="@EditingRulesMember.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
