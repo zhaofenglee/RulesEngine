@@ -41,10 +41,10 @@
         <Form id="RulesGroupSearchForm" class="mb-3">
             <Addons>
                 <Addon AddonType="AddonType.Body">
-                    <TextEdit @bind-Text="@Filter.FilterText"
+                    <TextInput @bind-Value="@Filter.FilterText"
                               Autofocus="true"
                               Placeholder="@L["Search"]">
-                    </TextEdit>
+                    </TextInput>
                 </Addon>
                 <Addon AddonType="AddonType.End">
                     <SubmitButton Form="RulesGroupSearchForm" Clicked="GetRulesGroupsAsync">
@@ -65,17 +65,17 @@
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["GroupName"]</FieldLabel>
-                        <TextEdit Text="@Filter.GroupName" TextChanged="@OnGroupNameChangedAsync" />                       
+                        <TextInput Value="@Filter.GroupName" ValueChanged="@OnGroupNameChangedAsync" />                       
                     </Field>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["OperatorType"]</FieldLabel>
                         <Select TValue="OperatorType?"
-		SelectedValue="@Filter.OperatorType"
-		SelectedValueChanged="@OnOperatorTypeChangedAsync">
+	Value="@Filter.OperatorType"
+	ValueChanged="@OnOperatorTypeChangedAsync">
 
-<SelectItem></SelectItem>
+<SelectItem TValue="OperatorType?"></SelectItem>
 
 @foreach(OperatorType value in Enum.GetValues(typeof(OperatorType)))
 {
@@ -90,7 +90,7 @@
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["Description"]</FieldLabel>
-                        <TextEdit Text="@Filter.Description" TextChanged="@OnDescriptionChangedAsync" />                       
+                        <TextInput Value="@Filter.Description" ValueChanged="@OnDescriptionChangedAsync" />                       
                     </Field>
                 </Column>
             </Row>
@@ -116,16 +116,16 @@
                         <EntityActions TItem="RulesGroupDto" EntityActionsColumn="@EntityActionsColumn">
                             <EntityAction TItem="RulesGroupDto"
                                           Visible="@CanEditRulesGroup"
-                                          Clicked="async () => await OpenRulesMembersAsync(context)"
+                                          Clicked="async () => await OpenRulesMembersAsync(context.Item)"
                                           Text="@L["EditDetails"]">
                             </EntityAction>
                             <EntityAction TItem="RulesGroupDto"
                                           Visible="@CanEditRulesGroup"
-                                          Clicked="async () => await OpenEditRulesGroupModalAsync(context)"
+                                          Clicked="async () => await OpenEditRulesGroupModalAsync(context.Item)"
                                           Text="@L["Edit"]"></EntityAction>
                             <EntityAction TItem="RulesGroupDto"
                                           Visible="@CanDeleteRulesGroup"
-                                          Clicked="() => DeleteRulesGroupAsync(context)"
+                                          Clicked="() => DeleteRulesGroupAsync(context.Item)"
                                           ConfirmationMessage="@(() => L["DeleteConfirmationMessage"])"
                                           Text="@L["Delete"]"></EntityAction>
                           
@@ -142,7 +142,7 @@
                       Field="OperatorType"
                       Caption="@L["OperatorType"]">
                     <DisplayTemplate>
-                        @L[$"Enum:OperatorType.{context.OperatorType.ToString("d")}"]
+                        @L[$"Enum:OperatorType.{context.Item.OperatorType.ToString("d")}"]
                     </DisplayTemplate>
               </DataGridColumn>
 
@@ -158,8 +158,8 @@
 </Card>
 
 @* ************************* CREATE MODAL ************************* *@
-<Modal @ref="CreateRulesGroupModal" Closing="@CreateRulesGroupModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="CreateRulesGroupModal" Closing="@CreateRulesGroupModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="CreateRulesGroupForm">
             <ModalHeader>
@@ -176,18 +176,18 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["GroupName"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
+                            <TextInput @bind-Value="@NewRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
 
                     <Field>
                         <FieldLabel>@L["OperatorType"]</FieldLabel>
-                        <Select TValue="OperatorType" @bind-SelectedValue="@NewRulesGroup.OperatorType" >
+                        <Select TValue="OperatorType" @bind-Value="@NewRulesGroup.OperatorType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(OperatorType)))
                             {
                                 <SelectItem TValue="OperatorType" Value="@((OperatorType) itemValue)">
@@ -201,11 +201,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@NewRulesGroup.Description"  >
+                            <MemoInput @bind-Value="@NewRulesGroup.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
@@ -228,8 +228,8 @@
 </Modal>
 
 @* ************************* EDIT MODAL ************************* *@
-<Modal @ref="EditRulesGroupModal" Closing="@EditRulesGroupModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="EditRulesGroupModal" Closing="@EditRulesGroupModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="EditRulesGroupForm">
             <ModalHeader>
@@ -246,18 +246,18 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["GroupName"] *</FieldLabel>
-                            <TextEdit @bind-Text="@EditingRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
+                            <TextInput @bind-Value="@EditingRulesGroup.GroupName" MaxLength="RulesGroupConsts.GroupNameMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
 
                     <Field>
                         <FieldLabel>@L["OperatorType"]</FieldLabel>
-                        <Select TValue="OperatorType" @bind-SelectedValue="@EditingRulesGroup.OperatorType" >
+                        <Select TValue="OperatorType" @bind-Value="@EditingRulesGroup.OperatorType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(OperatorType)))
                             {
                                 <SelectItem TValue="OperatorType" Value="@((OperatorType) itemValue)">
@@ -271,11 +271,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@EditingRulesGroup.Description"  >
+                            <MemoInput @bind-Value="@EditingRulesGroup.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
