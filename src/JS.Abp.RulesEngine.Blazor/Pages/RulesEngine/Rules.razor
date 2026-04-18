@@ -43,10 +43,10 @@
         <Form id="RuleSearchForm" class="mb-3">
             <Addons>
                 <Addon AddonType="AddonType.Body">
-                    <TextEdit @bind-Text="@Filter.FilterText"
+                    <TextInput @bind-Value="@Filter.FilterText"
                               Autofocus="true"
                               Placeholder="@L["Search"]">
-                    </TextEdit>
+                    </TextInput>
                 </Addon>
                 <Addon AddonType="AddonType.End">
                     <SubmitButton Form="RuleSearchForm" Clicked="GetRulesAsync">
@@ -67,29 +67,29 @@
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["RuleCode"]</FieldLabel>
-                        <TextEdit Text="@Filter.RuleCode" TextChanged="@OnRuleCodeChangedAsync" />                       
+                        <TextInput Value="@Filter.RuleCode" ValueChanged="@OnRuleCodeChangedAsync" />                       
                     </Field>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["SuccessEvent"]</FieldLabel>
-                        <TextEdit Text="@Filter.SuccessEvent" TextChanged="@OnSuccessEventChangedAsync" />                       
+                        <TextInput Value="@Filter.SuccessEvent" ValueChanged="@OnSuccessEventChangedAsync" />                       
                     </Field>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["ErrorMessage"]</FieldLabel>
-                        <TextEdit Text="@Filter.ErrorMessage" TextChanged="@OnErrorMessageChangedAsync" />                       
+                        <TextInput Value="@Filter.ErrorMessage" ValueChanged="@OnErrorMessageChangedAsync" />                       
                     </Field>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["ErrorType"]</FieldLabel>
                         <Select TValue="ErrorType?"
-		SelectedValue="@Filter.ErrorType"
-		SelectedValueChanged="@OnErrorTypeChangedAsync">
+	Value="@Filter.ErrorType"
+	ValueChanged="@OnErrorTypeChangedAsync">
 
-<SelectItem></SelectItem>
+<SelectItem TValue="ErrorType?"></SelectItem>
 
 @foreach(ErrorType value in Enum.GetValues(typeof(ErrorType)))
 {
@@ -105,10 +105,10 @@
                     <Field>
                         <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
                         <Select TValue="RuleExpressionType?"
-		SelectedValue="@Filter.RuleExpressionType"
-		SelectedValueChanged="@OnRuleExpressionTypeChangedAsync">
+	Value="@Filter.RuleExpressionType"
+	ValueChanged="@OnRuleExpressionTypeChangedAsync">
 
-<SelectItem></SelectItem>
+<SelectItem TValue="RuleExpressionType?"></SelectItem>
 
 @foreach(RuleExpressionType value in Enum.GetValues(typeof(RuleExpressionType)))
 {
@@ -123,13 +123,13 @@
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["Expression"]</FieldLabel>
-                        <TextEdit Text="@Filter.Expression" TextChanged="@OnExpressionChangedAsync" />                       
+                        <TextInput Value="@Filter.Expression" ValueChanged="@OnExpressionChangedAsync" />                       
                     </Field>
                 </Column>
                 <Column ColumnSize="ColumnSize.Is3">
                     <Field>
                         <FieldLabel>@L["Description"]</FieldLabel>
-                        <TextEdit Text="@Filter.Description" TextChanged="@OnDescriptionChangedAsync" />                       
+                        <TextInput Value="@Filter.Description" ValueChanged="@OnDescriptionChangedAsync" />                       
                     </Field>
                 </Column>
             </Row>
@@ -155,11 +155,11 @@
                         <EntityActions TItem="RuleDto" EntityActionsColumn="@EntityActionsColumn">
                             <EntityAction TItem="RuleDto"
                                           Visible="@CanEditRule"
-                                          Clicked="async () => await OpenEditRuleModalAsync(context)"
+                                          Clicked="async () => await OpenEditRuleModalAsync(context.Item)"
                                           Text="@L["Edit"]"></EntityAction>
                             <EntityAction TItem="RuleDto"
                                           Visible="@CanDeleteRule"
-                                          Clicked="() => DeleteRuleAsync(context)"
+                                          Clicked="() => DeleteRuleAsync(context.Item)"
                                           ConfirmationMessage="@(()=> L["DeleteConfirmationMessage"])"
                                           Text="@L["Delete"]"></EntityAction>
 
@@ -186,7 +186,7 @@
                       Field="ErrorType"
                       Caption="@L["ErrorType"]">
                     <DisplayTemplate>
-                        @L[$"Enum:ErrorType.{context.ErrorType.ToString("d")}"]
+                        @L[$"Enum:ErrorType.{context.Item.ErrorType.ToString("d")}"]
                     </DisplayTemplate>
               </DataGridColumn>
 
@@ -195,7 +195,7 @@
                       Field="RuleExpressionType"
                       Caption="@L["RuleExpressionType"]">
                     <DisplayTemplate>
-                        @L[$"Enum:RuleExpressionType.{context.RuleExpressionType.ToString("d")}"]
+                        @L[$"Enum:RuleExpressionType.{context.Item.RuleExpressionType.ToString("d")}"]
                     </DisplayTemplate>
               </DataGridColumn>
 
@@ -216,8 +216,8 @@
 </Card>
 
 @* ************************* CREATE MODAL ************************* *@
-<Modal @ref="CreateRuleModal" Closing="@CreateRuleModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="CreateRuleModal" Closing="@CreateRuleModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="CreateRuleForm">
             <ModalHeader>
@@ -234,11 +234,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["RuleCode"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
+                            <TextInput @bind-Value="@NewRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
@@ -246,11 +246,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["SuccessEvent"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
+                            <TextInput @bind-Value="@NewRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
@@ -258,18 +258,18 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["ErrorMessage"] *</FieldLabel>
-                            <TextEdit @bind-Text="@NewRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
+                            <TextInput @bind-Value="@NewRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
 
                     <Field>
                         <FieldLabel>@L["ErrorType"]</FieldLabel>
-                        <Select TValue="ErrorType" @bind-SelectedValue="@NewRule.ErrorType" >
+                        <Select TValue="ErrorType" @bind-Value="@NewRule.ErrorType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(ErrorType)))
                             {
                                 <SelectItem TValue="ErrorType" Value="@((ErrorType) itemValue)">
@@ -282,7 +282,7 @@
 
                     <Field>
                         <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
-                        <Select TValue="RuleExpressionType" @bind-SelectedValue="@NewRule.RuleExpressionType" >
+                        <Select TValue="RuleExpressionType" @bind-Value="@NewRule.RuleExpressionType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(RuleExpressionType)))
                             {
                                 <SelectItem TValue="RuleExpressionType" Value="@((RuleExpressionType) itemValue)">
@@ -296,11 +296,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Expression"]</FieldLabel>
-                            <MemoEdit @bind-Text="@NewRule.Expression"  >
+                            <MemoInput @bind-Value="@NewRule.Expression"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
@@ -308,11 +308,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@NewRule.Description"  >
+                            <MemoInput @bind-Value="@NewRule.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
@@ -335,8 +335,8 @@
 </Modal>
 
 @* ************************* EDIT MODAL ************************* *@
-<Modal @ref="EditRuleModal" Closing="@EditRuleModal.CancelClosingModalWhenFocusLost">
-    <ModalContent Centered="true">
+<Modal @ref="EditRuleModal" Closing="@EditRuleModal.CancelClosingModalWhenFocusLost" Centered="true">
+    <ModalContent>
 
         <Form id="EditRuleForm">
             <ModalHeader>
@@ -353,11 +353,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["RuleCode"] *</FieldLabel>
-                            <TextEdit @bind-Text="@EditingRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
+                            <TextInput @bind-Value="@EditingRule.RuleCode" MaxLength="RuleConsts.RuleCodeMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
@@ -365,11 +365,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["SuccessEvent"] *</FieldLabel>
-                            <TextEdit @bind-Text="@EditingRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
+                            <TextInput @bind-Value="@EditingRule.SuccessEvent" MaxLength="RuleConsts.SuccessEventMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
@@ -377,18 +377,18 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["ErrorMessage"] *</FieldLabel>
-                            <TextEdit @bind-Text="@EditingRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
+                            <TextInput @bind-Value="@EditingRule.ErrorMessage" MaxLength="RuleConsts.ErrorMessageMaxLength" >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </TextEdit>
+                            </TextInput>
                         </Field>
                     </Validation>
 
 
                     <Field>
                         <FieldLabel>@L["ErrorType"]</FieldLabel>
-                        <Select TValue="ErrorType" @bind-SelectedValue="@EditingRule.ErrorType" >
+                        <Select TValue="ErrorType" @bind-Value="@EditingRule.ErrorType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(ErrorType)))
                             {
                                 <SelectItem TValue="ErrorType" Value="@((ErrorType) itemValue)">
@@ -401,7 +401,7 @@
 
                     <Field>
                         <FieldLabel>@L["RuleExpressionType"]</FieldLabel>
-                        <Select TValue="RuleExpressionType" @bind-SelectedValue="@EditingRule.RuleExpressionType" >
+                        <Select TValue="RuleExpressionType" @bind-Value="@EditingRule.RuleExpressionType" >
                             @foreach (var itemValue in Enum.GetValues(typeof(RuleExpressionType)))
                             {
                                 <SelectItem TValue="RuleExpressionType" Value="@((RuleExpressionType) itemValue)">
@@ -415,11 +415,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Expression"]</FieldLabel>
-                            <MemoEdit @bind-Text="@EditingRule.Expression"  >
+                            <MemoInput @bind-Value="@EditingRule.Expression"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 
@@ -427,11 +427,11 @@
                     <Validation>
                         <Field>
                             <FieldLabel>@L["Description"]</FieldLabel>
-                            <MemoEdit @bind-Text="@EditingRule.Description"  >
+                            <MemoInput @bind-Value="@EditingRule.Description"  >
                                 <Feedback>
                                     <ValidationError />
                                 </Feedback>
-                            </MemoEdit>
+                            </MemoInput>
                         </Field>
                     </Validation>
 

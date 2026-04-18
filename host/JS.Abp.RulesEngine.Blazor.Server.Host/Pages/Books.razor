@@ -45,8 +45,8 @@
     </CardFooter>
 </Card>
 
-<Modal @ref="@CreateBookModal">
-    <ModalContent IsCentered="true">
+<Modal @ref="@CreateBookModal" Centered="true">
+    <ModalContent>
         <Form>
             <ModalHeader>
                 <ModalTitle>NewBook</ModalTitle>
@@ -55,12 +55,12 @@
             <ModalBody>
                 <Field>
                     <FieldLabel>Name</FieldLabel>
-                    <TextEdit @bind-Text="@NewBook.Name">
-                    </TextEdit>
+                    <TextInput @bind-Value="@NewBook.Name">
+                    </TextInput>
                 </Field>
                 <Field>
                     <FieldLabel>Price</FieldLabel>
-                    <NumericEdit TValue="int" @bind-Value="NewBook.Price"/>
+                    <NumericInput TValue="int" @bind-Value="NewBook.Price"/>
                 </Field>
             </ModalBody>
             <ModalFooter>
